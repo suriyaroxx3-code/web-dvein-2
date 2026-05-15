@@ -1,0 +1,135 @@
+import React, { useEffect, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import { Link } from 'react-router-dom';
+import * as FaIcons from 'react-icons/fa';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+
+// Custom CSS to refine pagination and navigation
+const styles = `
+  .swiper-pagination {
+    position: static !important;
+    margin-top: 1.5rem;
+  }
+  .swiper-pagination-bullet {
+    background: #CBD5E1; 
+    opacity: 1;
+    width: 8px;
+    height: 8px;
+    transition: all 0.3s ease;
+  }
+  .swiper-pagination-bullet-active {
+    background: #2563EB;
+    width: 20px;
+    border-radius: 4px;
+  }
+  .swiper-button-next, .swiper-button-prev {
+    color: #1F2937; 
+    width: 30px;
+    height: 30px;
+  }
+  .swiper-button-next:after, .swiper-button-prev:after {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+`;
+
+const ServiceHighlights = () => {
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/public/services')
+      .then(res => res.json())
+      .then(data => setServices(data))
+      .catch(err => console.error(err));
+  }, []);
+
+  const getIcon = (iconName) => {
+    const Icon = FaIcons[iconName];
+    return Icon ? <Icon /> : <FaIcons.FaCode />;
+  };
+
+  return (
+    <div className="py-16 bg-gray-50">
+      <style>{styles}</style>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Our Expertise</h2>
+          <p className="mt-3 max-w-2xl mx-auto text-lg text-gray-500 sm:mt-4">
+            Solutions tailored for your business growth.
+          </p>
+        </div>
+
+        <Swiper
+          modules={[Autoplay, Pagination, Navigation]}
+          spaceBetween={20} // Reduced space between slides
+          slidesPerView={1}
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          pagination={{ clickable: true, el: '.custom-pagination' }}
+          navigation={true}
+          breakpoints={{
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            1024: { slidesPerView: 3, spaceBetween: 24 },
+            1280: { slidesPerView: 3, spaceBetween: 30 },
+          }}
+          className="pb-4 px-2"
+        >
+          {services.map((service) => (
+            <SwiperSlide key={service._id} className="h-auto py-2">
+              <div className="flex flex-col h-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                
+                {/* IMAGE SECTION - Reduced Height */}
+                <div className="relative h-40 w-full bg-gray-100 flex-shrink-0 overflow-hidden">
+                   {service.image ? (
+                       <img 
+                         src={service.image} 
+                         alt={service.title} 
+                         className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
+                       />
+                   ) : (
+                       <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center text-4xl text-blue-500">
+                          {getIcon(service.iconName)}
+                       </div>
+                   )}
+                </div>
+
+                {/* CONTENT SECTION - More Compact */}
+                <div className="flex flex-col flex-grow p-5">
+                  <div className="flex items-start justify-between mb-2">
+                     <div className="flex items-center gap-2">
+                        <span className="text-blue-600 text-lg">{getIcon(service.iconName)}</span>
+                        <h3 className="text-lg font-bold text-gray-900 line-clamp-1">{service.title}</h3>
+                     </div>
+                  </div>
+                  
+                  <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4 flex-grow">
+                    {service.desc}
+                  </p>
+                  
+                  <div className="mt-auto pt-3 border-t border-gray-100">
+                    <Link 
+                      to={service.link || '/contact'} 
+                      className="inline-flex items-center text-xs font-bold text-blue-600 uppercase tracking-wide hover:text-blue-700 transition-colors group"
+                    >
+                        Know More 
+                        <FaIcons.FaArrowRight className="ml-1 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
+                </div>
+
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* Pagination Dots Container */}
+        <div className="custom-pagination flex justify-center mt-6"></div>
+      </div>
+    </div>
+  );
+};
+
+export default ServiceHighlights;
