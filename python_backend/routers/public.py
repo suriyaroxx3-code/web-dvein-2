@@ -5,68 +5,58 @@ GET  /api/public/services
 GET  /api/public/trainings
 GET  /api/public/products
 GET  /api/public/training-page
-POST /api/public/apply   (multipart – resume upload + email)
+POST /api/public/apply   (multipart - resume upload + email)
 """
 import os
 import shutil
-from typing   import Optional
-from fastapi  import APIRouter, Depends, File, Form, UploadFile, HTTPException
-from motor.motor_asyncio import AsyncIOMotorDatabase
-from bson     import ObjectId
+from typing import Optional
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 import smtplib
 from email.mime.multipart import MIMEMultipart
-from email.mime.text      import MIMEText
-from email.mime.base      import MIMEBase
-from email                import encoders
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
 from database import get_db
 
 router = APIRouter()
 
 
-# ── Tiny helper ───────────────────────────────────────────────────────────────
 def _doc(d: dict) -> dict:
-    """Convert MongoDB _id ObjectId → string for JSON."""
     d["_id"] = str(d["_id"])
     return d
 
 
-# ── GET /jobs ─────────────────────────────────────────────────────────────────
 @router.get("/jobs")
-async def get_jobs(db: AsyncIOMotorDatabase = Depends(get_db)):
+async def get_jobs(db=Depends(get_db)):
     jobs = await db["jobs"].find().sort("createdAt", -1).to_list(None)
     return [_doc(j) for j in jobs]
 
 
-# ── GET /slides ───────────────────────────────────────────────────────────────
 @router.get("/slides")
-async def get_slides(db: AsyncIOMotorDatabase = Depends(get_db)):
+async def get_slides(db=Depends(get_db)):
     slides = await db["slides"].find().to_list(None)
     return [_doc(s) for s in slides]
 
 
-# ── GET /services ─────────────────────────────────────────────────────────────
 @router.get("/services")
-async def get_services(db: AsyncIOMotorDatabase = Depends(get_db)):
+async def get_services(db=Depends(get_db)):
     services = await db["services"].find().to_list(None)
     return [_doc(s) for s in services]
 
 
-# ── GET /trainings ────────────────────────────────────────────────────────────
 @router.get("/trainings")
-async def get_trainings(db: AsyncIOMotorDatabase = Depends(get_db)):
+async def get_trainings(db=Depends(get_db)):
     trainings = await db["trainings"].find().to_list(None)
     return [_doc(t) for t in trainings]
 
 
-# ── GET /products ─────────────────────────────────────────────────────────────
 @router.get("/products")
-async def get_products(db: AsyncIOMotorDatabase = Depends(get_db)):
+async def get_products(db=Depends(get_db)):
     products = await db["products"].find().to_list(None)
     return [_doc(p) for p in products]
 
 
-# ── GET /training-page ────────────────────────────────────────────────────────
 @router.get("/training-page")
 async def get_training_page():
     return {
@@ -103,9 +93,9 @@ async def get_training_page():
                 {"_id": 3, "week": "Week 6-8", "title": "Frontend & Deployment", "desc": "Advanced React hooks, Redux, Next.js SSR, and deploying to AWS EC2."},
             ],
             "ai": [
-                {"_id": 1, "week": "Week 1-2", "title": "Python & Maths",          "desc": "Advanced Python structures, NumPy, Pandas, and Linear Algebra for ML."},
-                {"_id": 2, "week": "Week 3-5", "title": "Machine Learning Ops",    "desc": "Supervised Learning, Scikit-learn, and model evaluation metrics."},
-                {"_id": 3, "week": "Week 6-8", "title": "Deep Learning & LLMs",   "desc": "Neural Networks, Transformers, and building RAG applications."},
+                {"_id": 1, "week": "Week 1-2", "title": "Python & Maths",         "desc": "Advanced Python structures, NumPy, Pandas, and Linear Algebra for ML."},
+                {"_id": 2, "week": "Week 3-5", "title": "Machine Learning Ops",   "desc": "Supervised Learning, Scikit-learn, and model evaluation metrics."},
+                {"_id": 3, "week": "Week 6-8", "title": "Deep Learning & LLMs",  "desc": "Neural Networks, Transformers, and building RAG applications."},
             ],
         },
         "projects": [
@@ -114,37 +104,34 @@ async def get_training_page():
             {"_id": 3, "title": "Autonomous Agents", "tag": "AI/ML",      "desc": "Create AI agents that can browse the web and perform tasks automatically."},
         ],
         "faqs": [
-            {"_id": 1, "question": "Is this beginner friendly?",       "answer": "Yes, but be ready to work hard. We start from zero but move fast."},
+            {"_id": 1, "question": "Is this beginner friendly?",        "answer": "Yes, but be ready to work hard. We start from zero but move fast."},
             {"_id": 2, "question": "Do you provide placement support?", "answer": "We have 50+ hiring partners. If you clear our assessments, we refer you directly."},
             {"_id": 3, "question": "What is the duration?",             "answer": "The internship cohort runs for 8 weeks intense training + 4 weeks live project."},
         ],
     }
 
 
-# ── POST /apply ───────────────────────────────────────────────────────────────
 @router.post("/apply")
 async def apply_job(
-    firstName: str  = Form(...),
-    lastName:  str  = Form(...),
-    email:     str  = Form(...),
-    phone:     str  = Form(...),
-    jobTitle:  str  = Form(...),
+    firstName: str = Form(...),
+    lastName:  str = Form(...),
+    email:     str = Form(...),
+    phone:     str = Form(...),
+    jobTitle:  str = Form(...),
     portfolio: Optional[str] = Form(None),
     resume:    Optional[UploadFile] = File(None),
-    db: AsyncIOMotorDatabase = Depends(get_db),
+    db=Depends(get_db),
 ):
     resume_path: Optional[str] = None
 
-    # Save resume file
     if resume and resume.filename:
         os.makedirs("uploads", exist_ok=True)
-        safe_name  = f"{os.urandom(4).hex()}_{resume.filename}"
-        save_path  = os.path.join("uploads", safe_name)
+        safe_name = f"{os.urandom(4).hex()}_{resume.filename}"
+        save_path = os.path.join("uploads", safe_name)
         with open(save_path, "wb") as f:
             shutil.copyfileobj(resume.file, f)
         resume_path = f"uploads/{safe_name}"
 
-    # Save to DB
     from datetime import datetime
     await db["applications"].insert_one({
         "firstName":  firstName,
@@ -158,13 +145,11 @@ async def apply_job(
         "appliedAt":  datetime.utcnow(),
     })
 
-    # Send email alert (non-blocking — we don't fail the request if email fails)
     _send_application_email(firstName, lastName, email, phone, portfolio, jobTitle, resume_path)
 
     return {"success": True, "message": "Application Submitted Successfully!"}
 
 
-# ── Email helper ──────────────────────────────────────────────────────────────
 def _send_application_email(first, last, email, phone, portfolio, job_title, resume_path):
     EMAIL_USER = os.getenv("EMAIL_USER")
     EMAIL_PASS = os.getenv("EMAIL_PASS")

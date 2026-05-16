@@ -1,24 +1,28 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from motor.motor_asyncio import AsyncIOMotorClient
 from contextlib import asynccontextmanager
 import os
 
+from database import JsonDatabase
 from routers import auth, public, admin
 
-# ── DB lifespan ──────────────────────────────────────────────────────────────
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017/dvein_careers")
-    app.state.mongo = AsyncIOMotorClient(MONGO_URI)
-    app.state.db    = app.state.mongo["dvein_careers"]
-    print("✅ MongoDB Connected")
+    app.state.db = JsonDatabase("data")
+    print("JSON/InstantDB Database initialised")
+    admin_col = app.state.db["admins"]
+    existing = await admin_col.find_one({"username": "admin"})
+    if not existing:
+        await admin_col.insert_one({"username": "admin", "password": "admin123"})
+        print("Default admin created: admin / admin123")
     os.makedirs("uploads", exist_ok=True)
     yield
-    app.state.mongo.close()
 
-# ── App ───────────────────────────────────────────────────────────────────────
+
+os.makedirs("uploads", exist_ok=True)
+
 app = FastAPI(title="DVein API", lifespan=lifespan)
 
 app.add_middleware(
@@ -35,6 +39,7 @@ app.include_router(auth.router,   prefix="/api/auth")
 app.include_router(public.router, prefix="/api/public")
 app.include_router(admin.router,  prefix="/api/admin")
 
+
 @app.get("/")
 async def root():
-    return {"message": "DVein FastAPI Backend Running 🚀"}
+    return {"message": "DVein FastAPI Backend Running"}

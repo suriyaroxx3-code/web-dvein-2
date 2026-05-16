@@ -1,30 +1,22 @@
 """
-Run once to seed the admin account:
+Run once to create / reset the default admin account:
     python create_admin.py
 """
 import asyncio
-import os
-from motor.motor_asyncio import AsyncIOMotorClient
-from dotenv import load_dotenv
+from database import JsonDatabase
 
-load_dotenv()
-
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017/dvein_careers")
 
 async def main():
-    client = AsyncIOMotorClient(MONGO_URI)
-    db     = client["dvein_careers"]
-
+    db = JsonDatabase("data")
     existing = await db["admins"].find_one({"username": "admin"})
     if existing:
-        print("⚠️  Admin already exists!")
+        print("Warning: Admin already exists!")
     else:
         await db["admins"].insert_one({"username": "admin", "password": "admin123"})
-        print("🎉 Admin Created!")
-        print("👤 Username: admin")
-        print("🔑 Password: admin123")
+        print("Admin Created!")
+        print("Username: admin")
+        print("Password: admin123")
 
-    client.close()
 
 if __name__ == "__main__":
     asyncio.run(main())

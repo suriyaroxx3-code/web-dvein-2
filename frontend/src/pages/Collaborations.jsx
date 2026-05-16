@@ -16,7 +16,7 @@ const Collaborations = () => {
 
   const handleCollaborate = () => {
     window.open(
-      "https://wa.me/91XXXXXXXXXX?text=Hello%20DVein%20Team,%20I%20am%20interested%20in%20a%20global%20collaboration.",
+      "https://wa.me/919245798766?text=Hello%20DVein%20Team,%20I%20am%20interested%20in%20a%20global%20collaboration.",
       "_blank"
     );
   };

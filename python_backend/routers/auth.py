@@ -5,15 +5,13 @@ POST /api/auth/admin/login
 """
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, EmailStr
-from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from database  import get_db
+from database   import get_db
 from auth_utils import create_token, hash_password, verify_password
 
 router = APIRouter()
 
 
-# ── Schemas ───────────────────────────────────────────────────────────────────
 class RegisterBody(BaseModel):
     username: str
     email: EmailStr
@@ -30,13 +28,11 @@ class AdminLoginBody(BaseModel):
     password: str
 
 
-# ── Routes ────────────────────────────────────────────────────────────────────
 @router.post("/register")
-async def register_user(body: RegisterBody, db: AsyncIOMotorDatabase = Depends(get_db)):
+async def register_user(body: RegisterBody, db=Depends(get_db)):
     existing = await db["users"].find_one({"email": body.email})
     if existing:
         raise HTTPException(400, detail="User already exists")
-
     hashed = hash_password(body.password)
     await db["users"].insert_one({
         "username": body.username,
@@ -48,11 +44,10 @@ async def register_user(body: RegisterBody, db: AsyncIOMotorDatabase = Depends(g
 
 
 @router.post("/login")
-async def login_user(body: LoginBody, db: AsyncIOMotorDatabase = Depends(get_db)):
+async def login_user(body: LoginBody, db=Depends(get_db)):
     user = await db["users"].find_one({"email": body.email})
     if not user or not verify_password(body.password, user["password"]):
         raise HTTPException(400, detail="Invalid Credentials")
-
     token = create_token({"id": str(user["_id"]), "role": "user"})
     return {
         "success": True,
@@ -66,11 +61,9 @@ async def login_user(body: LoginBody, db: AsyncIOMotorDatabase = Depends(get_db)
 
 
 @router.post("/admin/login")
-async def login_admin(body: AdminLoginBody, db: AsyncIOMotorDatabase = Depends(get_db)):
+async def login_admin(body: AdminLoginBody, db=Depends(get_db)):
     admin = await db["admins"].find_one({"username": body.username})
-    # Plain-text password check (matching original Node logic)
     if not admin or admin["password"] != body.password:
         raise HTTPException(401, detail="Invalid Admin Credentials")
-
     token = create_token({"id": str(admin["_id"]), "role": "admin"})
     return {"success": True, "token": token}
