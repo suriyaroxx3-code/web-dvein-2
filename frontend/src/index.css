@@ -11,6 +11,25 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Poppins', sans-serif;
+  color: #0056D2; /* DVein Blue */
+}
+
+/* DVein brand accent overrides */
+a {
+  color: #0056D2;
+}
+a:hover {
+  color: #10B981;
+}
+
+/* Allow individual component colors to override via Tailwind */
+[class*="text-"] h1,
+[class*="text-"] h2,
+[class*="text-"] h3,
+[class*="text-"] h4,
+[class*="text-"] h5,
+[class*="text-"] h6 {
+  color: inherit;
 }
 
 /* --- 1. CINEMATIC BACKGROUND --- */

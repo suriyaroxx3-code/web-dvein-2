@@ -1,5 +1,4 @@
 import React from 'react';
-import TopBar from '../components/common/TopBar';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import Clients from '../components/Clients';
@@ -18,12 +17,7 @@ const Home = () => {
     // FIX 1: Removed 'overflow-x-hidden' from here (It breaks sticky)
     <div className="font-sans text-gray-900 ai-gradient-bg">
       
-      {/* 1. TopBar (Normal Scroll - Will go up) */}
-      <div className="w-full bg-white z-50 border-b border-gray-100">
-        <TopBar />
-      </div>
-
-      {/* 2. Navbar (Sticky - Will stick to top when TopBar is gone) */}
+      {/* Navbar (Sticky) */}
       <div className="sticky top-0 z-[60]">
          <Navbar />
       </div>

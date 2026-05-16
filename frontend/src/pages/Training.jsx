@@ -66,23 +66,33 @@ const Training = () => {
       .catch(() => {});
   }, []);
 
+  const [submitStatus, setSubmitStatus] = useState(null); // null | 'success' | 'fallback'
+
   const handleApply = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    setSubmitStatus(null);
     const dataToSend = new FormData();
     Object.keys(formData).forEach(key => dataToSend.append(key, formData[key]));
     if (resume) dataToSend.append('resume', resume);
     try {
-      const response = await fetch('http://localhost:5000/api/public/apply', { method: 'POST', body: dataToSend });
+      const response = await fetch('http://localhost:5000/api/public/apply', {
+        method: 'POST',
+        body: dataToSend,
+        signal: AbortSignal.timeout(8000)
+      });
       const result = await response.json();
       if (result.success) {
-        alert("Application Sent Successfully!");
+        setSubmitStatus('success');
         setFormData({ firstName: '', lastName: '', email: '', phone: '', portfolio: '', jobTitle: 'Internship Cohort 2026' });
         setResume(null);
         e.target.reset();
+      } else {
+        setSubmitStatus('fallback');
       }
     } catch (err) {
-      alert("Server Error. Please try again.");
+      // Backend not running — show WhatsApp/email fallback
+      setSubmitStatus('fallback');
     } finally {
       setSubmitting(false);
     }
@@ -191,6 +201,35 @@ const Training = () => {
             <button type="submit" disabled={submitting} className="md:col-span-2 py-4 bg-gray-900 text-white rounded-xl font-bold text-base hover:bg-black transition-all shadow-xl disabled:opacity-50">
               {submitting ? "Processing..." : "Submit Application"}
             </button>
+
+            {submitStatus === 'success' && (
+              <div className="md:col-span-2 bg-green-50 border border-green-200 text-green-700 rounded-xl p-4 text-sm font-semibold text-center">
+                ✅ Application submitted successfully! Our team will reach out soon.
+              </div>
+            )}
+
+            {submitStatus === 'fallback' && (
+              <div className="md:col-span-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-5 text-sm">
+                <p className="font-bold mb-2">⚠️ Our server is temporarily offline.</p>
+                <p className="mb-3 text-xs">Please send your application via one of these alternatives:</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href={`https://wa.me/919500181230?text=Hello%20DVein%20Team!%20I%20want%20to%20apply%20for%20Internship%20Cohort%202026.%20Name:%20${encodeURIComponent(formData.firstName + ' ' + formData.lastName)}%20Email:%20${encodeURIComponent(formData.email)}%20Phone:%20${encodeURIComponent(formData.phone)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-green-500 text-white text-center py-2 px-4 rounded-lg font-bold text-xs hover:bg-green-600 transition"
+                  >
+                    📱 Apply via WhatsApp
+                  </a>
+                  <a
+                    href={`mailto:info@dveininnovations.com?subject=Internship%20Application%20-%20${encodeURIComponent(formData.firstName + ' ' + formData.lastName)}&body=Hello%20DVein%20Team,%0A%0AI%20want%20to%20apply%20for%20Internship%20Cohort%202026.%0A%0AName:%20${encodeURIComponent(formData.firstName + ' ' + formData.lastName)}%0AEmail:%20${encodeURIComponent(formData.email)}%0APhone:%20${encodeURIComponent(formData.phone)}`}
+                    className="flex-1 bg-dveinBlue text-white text-center py-2 px-4 rounded-lg font-bold text-xs hover:opacity-90 transition"
+                  >
+                    ✉️ Apply via Email
+                  </a>
+                </div>
+              </div>
+            )}
           </form>
         </div>
       </div>

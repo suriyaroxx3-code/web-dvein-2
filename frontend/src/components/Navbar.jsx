@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenuAlt3, HiX, HiChevronDown } from 'react-icons/hi';
-import { FaChevronRight } from 'react-icons/fa';
+import { FaChevronRight, FaUserShield, FaTimes } from 'react-icons/fa';
 import logo from '../assets/logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [mobileServiceOpen, setMobileServiceOpen] = useState(false);
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [adminCreds, setAdminCreds] = useState({ username: '', password: '' });
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [adminError, setAdminError] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsOpen(false);
@@ -16,8 +21,34 @@ const Navbar = () => {
   }, [location]);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : 'unset';
-  }, [isOpen]);
+    document.body.style.overflow = (isOpen || showAdminModal) ? 'hidden' : 'unset';
+  }, [isOpen, showAdminModal]);
+
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    setAdminLoading(true);
+    setAdminError('');
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(adminCreds)
+      });
+      const data = await response.json();
+      if (data.success) {
+        localStorage.setItem('adminToken', data.token);
+        localStorage.setItem('isAdmin', 'true');
+        setShowAdminModal(false);
+        navigate('/admin-dashboard');
+      } else {
+        setAdminError(data.message || 'Invalid credentials');
+      }
+    } catch (err) {
+      setAdminError('Server unavailable. Ensure backend is running.');
+    } finally {
+      setAdminLoading(false);
+    }
+  };
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -47,11 +78,13 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
 
-            {/* Logo */}
-            <div className="flex-shrink-0 cursor-pointer z-[70]">
-              <Link to="/">
-                <img src={logo} alt="DVein" className="h-10 md:h-12 w-auto object-contain" />
-              </Link>
+            {/* Logo — click opens hidden Admin Login */}
+            <div
+              className="flex-shrink-0 cursor-pointer z-[70]"
+              onClick={() => { setShowAdminModal(true); setAdminError(''); setAdminCreds({ username: '', password: '' }); }}
+              title=""
+            >
+              <img src={logo} alt="DVein" className="h-10 md:h-12 w-auto object-contain" />
             </div>
 
             {/* Desktop Menu */}
@@ -60,13 +93,13 @@ const Navbar = () => {
                 if (item.subLinks) {
                   return (
                     <div key={item.name} className="relative group h-full flex items-center">
-                      <button className="flex items-center gap-1 text-gray-700 hover:text-blue-600 font-extrabold text-[12px] uppercase tracking-wider transition-colors relative h-full">
+                      <button className="flex items-center gap-1 text-gray-700 hover:text-dveinBlue font-extrabold text-[12px] uppercase tracking-wider transition-colors relative h-full">
                         {item.name} <HiChevronDown className="text-lg mb-[2px]" />
-                        <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-blue-600 transition-all duration-300 group-hover:w-full rounded-t-full"></span>
+                        <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-dveinBlue transition-all duration-300 group-hover:w-full rounded-t-full"></span>
                       </button>
                       <div className="absolute top-[80px] left-0 w-64 bg-white border border-gray-100 shadow-2xl rounded-b-2xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
                         {item.subLinks.map((sub) => (
-                          <Link key={sub.name} to={sub.path} className="block px-6 py-4 text-gray-700 hover:bg-slate-50 hover:text-blue-600 text-[11px] font-black transition-colors border-b border-gray-50 last:border-0 uppercase tracking-widest">
+                          <Link key={sub.name} to={sub.path} className="block px-6 py-4 text-gray-700 hover:bg-slate-50 hover:text-dveinBlue text-[11px] font-black transition-colors border-b border-gray-50 last:border-0 uppercase tracking-widest">
                             {sub.name}
                           </Link>
                         ))}
@@ -78,11 +111,11 @@ const Navbar = () => {
                   <Link
                     key={item.name}
                     to={item.path}
-                    className="text-gray-700 hover:text-blue-600 font-extrabold text-[12px] uppercase tracking-wider transition-colors relative group h-full flex items-center"
+                    className="text-gray-700 hover:text-dveinBlue font-extrabold text-[12px] uppercase tracking-wider transition-colors relative group h-full flex items-center"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
                     {item.name}
-                    <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-blue-600 transition-all duration-300 group-hover:w-full rounded-t-full"></span>
+                    <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-dveinBlue transition-all duration-300 group-hover:w-full rounded-t-full"></span>
                   </Link>
                 );
               })}
@@ -90,7 +123,7 @@ const Navbar = () => {
 
             {/* Mobile Toggle */}
             <div className="lg:hidden z-[70]">
-              <button onClick={() => setIsOpen(true)} className="text-gray-800 hover:text-blue-600 p-2 bg-gray-50 rounded-full transition-all">
+              <button onClick={() => setIsOpen(true)} className="text-gray-800 hover:text-dveinBlue p-2 bg-gray-50 rounded-full transition-all">
                 <HiMenuAlt3 size={28} />
               </button>
             </div>
@@ -126,7 +159,7 @@ const Navbar = () => {
                           {mobileServiceOpen && (
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pl-4 space-y-2">
                               {item.subLinks.map((sub) => (
-                                <Link key={sub.name} to={sub.path} onClick={() => setIsOpen(false)} className="flex items-center justify-between p-4 rounded-xl text-gray-500 font-black hover:text-blue-600 transition-all uppercase text-[10px] bg-gray-50/50 tracking-widest">
+                                <Link key={sub.name} to={sub.path} onClick={() => setIsOpen(false)} className="flex items-center justify-between p-4 rounded-xl text-gray-500 font-black hover:text-dveinBlue transition-all uppercase text-[10px] bg-gray-50/50 tracking-widest">
                                   {sub.name} <FaChevronRight size={8} />
                                 </Link>
                               ))}
@@ -135,7 +168,7 @@ const Navbar = () => {
                         </AnimatePresence>
                       </div>
                     ) : (
-                      <Link to={item.path} onClick={() => setIsOpen(false)} className="flex items-center justify-between p-4 rounded-xl text-gray-700 font-extrabold hover:bg-slate-50 hover:text-blue-600 transition-all border border-gray-100 uppercase text-[11px] tracking-widest">
+                      <Link to={item.path} onClick={() => setIsOpen(false)} className="flex items-center justify-between p-4 rounded-xl text-gray-700 font-extrabold hover:bg-slate-50 hover:text-dveinBlue transition-all border border-gray-100 uppercase text-[11px] tracking-widest">
                         {item.name} <FaChevronRight size={10} />
                       </Link>
                     )}
@@ -145,6 +178,79 @@ const Navbar = () => {
 
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* HIDDEN ADMIN LOGIN MODAL */}
+      <AnimatePresence>
+        {showAdminModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
+            onClick={(e) => { if (e.target === e.currentTarget) setShowAdminModal(false); }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 relative"
+            >
+              <button
+                onClick={() => setShowAdminModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition"
+              >
+                <FaTimes size={18} />
+              </button>
+
+              <div className="text-center mb-6">
+                <div className="w-14 h-14 bg-dveinBlue rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl shadow-lg">
+                  <FaUserShield />
+                </div>
+                <h2 className="text-xl font-black text-gray-800">Admin Portal</h2>
+                <p className="text-xs text-gray-400 mt-1">Authorized access only</p>
+              </div>
+
+              <form onSubmit={handleAdminLogin} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Username</label>
+                  <input
+                    type="text"
+                    required
+                    value={adminCreds.username}
+                    onChange={e => setAdminCreds({ ...adminCreds, username: e.target.value })}
+                    className="w-full border border-gray-200 bg-gray-50 p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-dveinBlue/20 focus:border-dveinBlue transition"
+                    placeholder="admin"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Password</label>
+                  <input
+                    type="password"
+                    required
+                    value={adminCreds.password}
+                    onChange={e => setAdminCreds({ ...adminCreds, password: e.target.value })}
+                    className="w-full border border-gray-200 bg-gray-50 p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-dveinBlue/20 focus:border-dveinBlue transition"
+                    placeholder="••••••"
+                  />
+                </div>
+
+                {adminError && (
+                  <p className="text-red-500 text-xs font-semibold text-center bg-red-50 py-2 px-3 rounded-lg">{adminError}</p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={adminLoading}
+                  className="w-full bg-dveinBlue text-white py-3 rounded-xl font-bold text-sm hover:opacity-90 transition disabled:opacity-50"
+                >
+                  {adminLoading ? 'Verifying...' : 'Access Dashboard'}
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
