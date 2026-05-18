@@ -150,8 +150,10 @@ const StudentProjects = () => {
 
           <div className="flex justify-center gap-4">
             {/* ✅ LIVE PDF DOWNLOAD: Tied to Admin Backend Sync */}
-            <a 
-              href="http://localhost:5000/api/public/download-project-ledger" 
+            <a
+              href="/DVein_Projects_List.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-3 bg-slate-900 text-white px-10 py-5 rounded-2xl font-extrabold text-xs uppercase tracking-widest shadow-xl hover:bg-indigo-600 transition-all transform hover:-translate-y-1"
             >
               <FaCloudDownloadAlt className="text-xl" /> Download Project Ledger (PDF)

@@ -62,9 +62,14 @@ const AcademyPage = () => {
             >
               Browse Curriculum
             </a>
-            <button className="bg-white border border-slate-200 text-slate-700 px-9 py-4 rounded-xl font-medium text-sm hover:bg-slate-50 transition">
+            <a
+              href="/DVein_Roadmap_LightTheme_removed.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white border border-slate-200 text-slate-700 px-9 py-4 rounded-xl font-medium text-sm hover:bg-slate-50 transition"
+            >
               Download Roadmap
-            </button>
+            </a>
           </div>
         </motion.div>
       </section>

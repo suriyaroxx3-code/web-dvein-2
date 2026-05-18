@@ -14,6 +14,7 @@ import SoftwareSolutions from './pages/SoftwareSolutions';
 import CoursesPage from './pages/CoursesPage';
 import StudentProjects from './pages/StudentProjects';
 import Collaborations from './pages/Collaborations';
+import OurStory from './pages/OurStory';
 
 // USER AUTH
 import Login from './pages/Login';
@@ -33,16 +34,17 @@ const Courses = () => <div className="h-screen flex items-center justify-center 
 const Layout = () => {
   const location = useLocation();
   
-  // Navbar & Footer should NOT appear on Admin Pages
+  // Navbar & Footer should NOT appear on Admin Pages or Our Story Page
   const isHomePage = location.pathname === '/';
-  const isAdminPage = location.pathname.startsWith('/admin'); 
+  const isAdminPage = location.pathname.startsWith('/admin');
+  const isOurStoryPage = location.pathname === '/our-story';
 
   return (
     <>
       <ScrollToTop />
       
-      {/* Navbar Hide on Home & Admin Pages */}
-      {!isHomePage && !isAdminPage && <Navbar />}
+      {/* Navbar Hide on Home, Admin & Our Story Pages */}
+      {!isHomePage && !isAdminPage && !isOurStoryPage && <Navbar />}
 
       <Routes>
         {/* PUBLIC ROUTES */}
@@ -55,6 +57,7 @@ const Layout = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/student-projects" element={<StudentProjects />} />
         <Route path="/collaboration" element={<Collaborations />} />
+        <Route path="/our-story" element={<OurStory />} />
         
         
         {/* USER AUTH ROUTES */}
@@ -69,8 +72,8 @@ const Layout = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      {/* Footer Hide on Home & Admin Pages */}
-      {!isHomePage && !isAdminPage && (
+      {/* Footer Hide on Home, Admin & Our Story Pages */}
+      {!isHomePage && !isAdminPage && !isOurStoryPage && (
         <>
           <Footer />
           <WhatsAppBtn />

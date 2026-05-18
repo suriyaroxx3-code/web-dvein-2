@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaCode, FaUserGraduate, FaArrowRight } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const WelcomeSection = () => {
   return (
@@ -30,9 +31,12 @@ const WelcomeSection = () => {
                 <b> Industry Requirements</b> and <b>Academic Learning</b>.
               </p>
               
-              <button className="flex items-center gap-2 text-white bg-gray-900 hover:bg-dveinBlue px-8 py-3 rounded-lg font-medium transition-all shadow-lg hover:shadow-dveinBlue/30">
+              <Link
+                to="/our-story"
+                className="inline-flex items-center gap-2 text-white bg-gray-900 hover:bg-dveinBlue px-8 py-3 rounded-lg font-medium transition-all shadow-lg hover:shadow-dveinBlue/30"
+              >
                 Read Our Story <FaArrowRight />
-              </button>
+              </Link>
             </motion.div>
           </div>
 
