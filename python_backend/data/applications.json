@@ -1,0 +1,14 @@
+[
+  {
+    "firstName": "Demo",
+    "lastName": "Student",
+    "email": "demo@example.com",
+    "phone": "9876543210",
+    "portfolio": "https://github.com/demo-student",
+    "jobTitle": "Full Stack Developer Intern",
+    "resumePath": null,
+    "status": "Pending",
+    "appliedAt": "2026-05-18 10:15:21.938282",
+    "_id": "8640f0bb-817a-4376-9019-e872ca13cc6e"
+  }
+]
