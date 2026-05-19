@@ -9,7 +9,7 @@ git config user.name "Genjaku"
 
 git add -A
 
-git commit -m "chore: Remove 15 redundant bat files, clean up root folder"
+git commit -m "feat: Change hero slide title color to #0056D2 across all 3 slides"
 
 git push origin main
 
