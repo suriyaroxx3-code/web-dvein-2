@@ -5,8 +5,48 @@ import {
   FaInstagram, FaWhatsapp, FaArrowRight, FaClock, FaCheckCircle 
 } from 'react-icons/fa';
 
+const WA_OTHER = '918667363893';
+
 const Contact = () => {
-  const [formState, setFormState] = useState({ name: '', email: '', budget: '', message: '' });
+  const [formState, setFormState] = useState({ name: '', email: '', service: '', message: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // null | 'success' | 'error'
+
+  const handleContact = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitStatus(null);
+
+    // Build WhatsApp message
+    const waText = [
+      `*New Contact Message — DVein Innovations*`,
+      ``,
+      `*Name:* ${formState.name}`,
+      `*Email:* ${formState.email}`,
+      `*Service:* ${formState.service || 'General Enquiry'}`,
+      `*Message:* ${formState.message}`,
+      ``,
+      `_Sent from DVein Website_`,
+    ].join('\n');
+
+    // Also try backend (silent)
+    try {
+      const data = new FormData();
+      data.append('name', formState.name);
+      data.append('email', formState.email);
+      data.append('service', formState.service || 'General Enquiry');
+      data.append('message', formState.message);
+      await fetch('http://localhost:5000/api/public/contact', {
+        method: 'POST', body: data, signal: AbortSignal.timeout(5000),
+      });
+    } catch (_) {}
+
+    // Open WhatsApp
+    window.open(`https://wa.me/${WA_OTHER}?text=${encodeURIComponent(waText)}`, '_blank');
+    setSubmitStatus('success');
+    setFormState({ name: '', email: '', service: '', message: '' });
+    setSubmitting(false);
+  };
 
   // Animation Variants
   const containerVars = {
@@ -115,38 +155,109 @@ const Contact = () => {
              <h2 className="text-3xl font-bold text-gray-900 mb-2">Send us a Message</h2>
              <p className="text-gray-500 mb-8">We usually respond within 2 hours.</p>
 
-             <form className="space-y-6">
+             {/* Success message */}
+             {submitStatus === 'success' && (
+               <div className="flex flex-col items-center gap-3 py-10 text-center">
+                 <FaCheckCircle className="text-5xl text-dveinGreen" />
+                 <h3 className="text-2xl font-bold text-gray-900">WhatsApp Opened! ✅</h3>
+                 <p className="text-gray-500 text-sm max-w-xs">
+                   Your message is pre-filled in WhatsApp. Just tap <strong>Send</strong> to complete.
+                 </p>
+                 <button
+                   onClick={() => setSubmitStatus(null)}
+                   className="mt-4 px-6 py-2.5 bg-dveinBlue text-white rounded-xl font-bold text-sm hover:opacity-90 transition"
+                 >
+                   Send Another Message
+                 </button>
+               </div>
+             )}
+
+             {/* Error fallback */}
+             {submitStatus === 'error' && (
+               <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center mb-6">
+                 <p className="text-red-700 font-bold text-sm mb-1">Couldn't send the message right now.</p>
+                 <p className="text-red-500 text-xs">
+                   Please email us directly at{' '}
+                   <a href="mailto:info@dveininnovations.com" className="underline">info@dveininnovations.com</a>
+                   {' '}or{' '}
+                   <a href="https://wa.me/919500181230" className="underline" target="_blank" rel="noopener noreferrer">WhatsApp us</a>.
+                 </p>
+                 <button onClick={() => setSubmitStatus(null)} className="text-xs text-red-400 underline mt-3">Try again</button>
+               </div>
+             )}
+
+             {!submitStatus && (
+             <form onSubmit={handleContact} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Name</label>
-                      <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-dveinBlue focus:ring-2 focus:ring-dveinBlue/10 transition-all" placeholder="John Doe" />
+                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Name *</label>
+                      <input
+                        type="text" required
+                        value={formState.name}
+                        onChange={e => setFormState(p => ({ ...p, name: e.target.value }))}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-dveinBlue focus:ring-2 focus:ring-dveinBlue/10 transition-all"
+                        placeholder="John Doe"
+                      />
                    </div>
                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Email</label>
-                      <input type="email" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-dveinBlue focus:ring-2 focus:ring-dveinBlue/10 transition-all" placeholder="john@example.com" />
+                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Email *</label>
+                      <input
+                        type="email" required
+                        value={formState.email}
+                        onChange={e => setFormState(p => ({ ...p, email: e.target.value }))}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-dveinBlue focus:ring-2 focus:ring-dveinBlue/10 transition-all"
+                        placeholder="john@example.com"
+                      />
                    </div>
                 </div>
 
                 <div className="space-y-2">
                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Service Interested In</label>
-                   <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-dveinBlue focus:ring-2 focus:ring-dveinBlue/10 transition-all text-gray-600">
-                      <option>Select Service</option>
+                   <select
+                     value={formState.service}
+                     onChange={e => setFormState(p => ({ ...p, service: e.target.value }))}
+                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-dveinBlue focus:ring-2 focus:ring-dveinBlue/10 transition-all text-gray-600"
+                   >
+                      <option value="">Select Service</option>
                       <option>Web Development</option>
                       <option>Mobile App</option>
                       <option>AI Solutions</option>
-                      <option>Internship/Training</option>
+                      <option>Internship / Training</option>
+                      <option>Student Project</option>
+                      <option>General Enquiry</option>
                    </select>
                 </div>
 
                 <div className="space-y-2">
-                   <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Message</label>
-                   <textarea rows="4" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-dveinBlue focus:ring-2 focus:ring-dveinBlue/10 transition-all" placeholder="Tell us about your project..."></textarea>
+                   <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Message *</label>
+                   <textarea
+                     rows="4" required
+                     value={formState.message}
+                     onChange={e => setFormState(p => ({ ...p, message: e.target.value }))}
+                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-dveinBlue focus:ring-2 focus:ring-dveinBlue/10 transition-all"
+                     placeholder="Tell us about your project..."
+                   ></textarea>
                 </div>
 
-                <button className="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-dveinBlue transition-colors shadow-lg hover:shadow-dveinBlue/30 flex items-center justify-center gap-2">
-                   Send Message <FaArrowRight />
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-dveinBlue transition-colors shadow-lg hover:shadow-dveinBlue/30 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {submitting ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                      </svg>
+                      Sending…
+                    </>
+                  ) : (
+                    <>Send Message <FaArrowRight /></>
+                  )}
                 </button>
              </form>
+             )}
           </motion.div>
 
           {/* Right: "What Happens Next?" Content */}
@@ -180,43 +291,20 @@ const Contact = () => {
 
              {/* Social Proof Mini */}
              <div className="mt-12 bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
-                <div className="flex items-center gap-4 mb-3">
-                   <div className="flex -space-x-3">
-                      {[1,2,3,4].map((i) => (
-                         <div key={i} className="w-10 h-10 rounded-full bg-gray-300 border-2 border-white"></div>
-                      ))}
-                   </div>
-                   <span className="font-bold text-gray-700">Trusted by 50+ Clients</span>
+                <p className="text-sm font-semibold text-gray-700 mb-4">Trusted by teams at:</p>
+                <div className="flex flex-wrap gap-3 text-xs font-bold text-gray-400 uppercase tracking-widest">
+                  {['Startups', 'Agencies', 'Enterprises', 'Institutions'].map((t, i) => (
+                    <span key={i} className="px-3 py-1 bg-white border border-gray-200 rounded-full">{t}</span>
+                  ))}
                 </div>
-                <p className="text-sm text-gray-500">Join the network of successful businesses built by DVein.</p>
-             </div>
+              </div>
           </motion.div>
         </div>
-
-        {/* === 4. FAQ / EXTRA INFO === */}
-        <div className="mt-24 border-t border-gray-200 pt-16">
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div>
-                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Connect on Socials</h2>
-                 <p className="text-gray-500 mb-6">Stay updated with our latest tech news, internship openings, and company culture.</p>
-                 <div className="flex gap-4">
-                    <a href="#" className="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm text-xl"><FaLinkedinIn /></a>
-                    <a href="#" className="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center text-pink-500 hover:bg-pink-500 hover:text-white transition-all shadow-sm text-xl"><FaInstagram /></a>
-                    <a href="https://wa.me/919500181230" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center text-green-500 hover:bg-green-500 hover:text-white transition-all shadow-sm text-xl"><FaWhatsapp /></a>
-                 </div>
-              </div>
-              <div className="bg-gray-900 text-white p-8 rounded-3xl relative overflow-hidden">
-                 <div className="relative z-10">
-                    <h3 className="text-xl font-bold mb-2">Students & Freshers?</h3>
-                    <p className="text-gray-400 text-sm mb-4">Looking for internships or training? Visit our Career Hub.</p>
-                    <a href="/career-hub" className="text-dveinGreen font-bold text-sm hover:underline">Apply Now →</a>
-                 </div>
-                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-              </div>
-           </div>
-        </div>
-
       </div>
+
+      <footer className="py-12 text-center border-t border-gray-100 bg-white">
+        <p className="text-xs text-gray-400">© 2026 DVein Innovations · All Rights Reserved</p>
+      </footer>
     </div>
   );
 };

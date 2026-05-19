@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+// Link removed — all CTAs now go to WhatsApp
 import {
   FaCode, FaMobileAlt, FaBrain, FaCloud, FaDatabase, FaShieldAlt,
   FaCheckCircle, FaAws, FaRocket, FaHeadset, FaChartLine, FaLaptopCode,
@@ -49,6 +49,10 @@ const faqs = [
   { question: "Do you provide source code ownership?", answer: "Absolutely. Once the project is fully paid for, you own 100% of the source code and intellectual property." },
 ];
 
+const WA_SS = '919500181230';
+const openWA_SS = (msg = 'Hello DVein Team, I am interested in your Software Solutions.') =>
+  window.open(`https://wa.me/${WA_SS}?text=${encodeURIComponent(msg)}`, '_blank');
+
 const SoftwareSolutions = () => {
   const [activeAccordion, setActiveAccordion] = useState(null);
 
@@ -70,9 +74,10 @@ const SoftwareSolutions = () => {
             We are a full-cycle software development company. From conceptualization to deployment, we build robust, scalable, and secure digital products.
             </p>
             <div className="flex justify-center gap-4">
-               <Link to="/contact">
-                 <button className="px-8 py-4 bg-purple-600 text-white rounded-xl font-bold shadow-lg hover:bg-purple-700 hover:-translate-y-1 transition-all">Start Your Project</button>
-               </Link>
+               <button
+                 onClick={() => openWA_SS('Hello DVein Team, I want to start a software project with you.')}
+                 className="px-8 py-4 bg-purple-600 text-white rounded-xl font-bold shadow-lg hover:bg-purple-700 hover:-translate-y-1 transition-all"
+               >Start Your Project</button>
                <button onClick={() => document.getElementById('services').scrollIntoView({ behavior: 'smooth' })} className="px-8 py-4 bg-white text-gray-800 border border-gray-200 rounded-xl font-bold shadow-sm hover:bg-gray-50 transition-all">Explore Services</button>
             </div>
         </motion.div>
@@ -153,9 +158,12 @@ const SoftwareSolutions = () => {
                     <p className="text-gray-400 text-lg leading-relaxed mb-8">
                         Our technical expertise spans across various industries. We understand the unique challenges and compliance requirements of your sector.
                     </p>
-                    <Link to="/contact" className="text-purple-400 font-bold hover:underline flex items-center gap-2">
-                        Schedule a Consultation <FaArrowRight />
-                    </Link>
+                    <button
+                      onClick={() => openWA_SS('Hello DVein Team, I would like to schedule a consultation for software development.')}
+                      className="text-purple-400 font-bold hover:underline flex items-center gap-2"
+                    >
+                      Schedule a Consultation <FaArrowRight />
+                    </button>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     {industries.map((ind, i) => (
@@ -238,11 +246,12 @@ const SoftwareSolutions = () => {
                     No commitment. Just a friendly conversation about your goals and how we can help you achieve them.
                   </p>
                   
-                  <Link to="/contact">
-                      <button className="px-10 py-5 bg-white text-gray-900 rounded-2xl font-bold text-lg hover:scale-105 transition-transform flex items-center gap-3 mx-auto shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]">
-                        Get a Free Quote <FaArrowRight />
-                      </button>
-                  </Link>
+                  <button
+                    onClick={() => openWA_SS('Hello DVein Team, I would like to get a free quote for my software project.')}
+                    className="px-10 py-5 bg-white text-gray-900 rounded-2xl font-bold text-lg hover:scale-105 transition-transform flex items-center gap-3 mx-auto shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]"
+                  >
+                    Get a Free Quote <FaArrowRight />
+                  </button>
               </div>
           </div>
       </div>

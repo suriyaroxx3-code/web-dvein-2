@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+// Link removed — all CTAs now go to WhatsApp
+const WA_PROD = '919500181230';
+const openWA_Prod = (msg) =>
+  window.open(`https://wa.me/${WA_PROD}?text=${encodeURIComponent(msg)}`, '_blank');
 import { 
   FaRocket, FaShieldAlt, FaSync, FaBolt, FaDatabase, 
   FaNetworkWired, FaCogs, FaArrowRight, FaPlayCircle, 
@@ -169,10 +172,16 @@ const ProductsPage = () => {
                 </div>
 
                 <div className="grid gap-3 mt-auto">
-                  <button className="w-full py-3 bg-indigo-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:bg-slate-900 transition-all flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => openWA_Prod(`Hello DVein Team, I am interested in launching a trial for: ${item.name}`)}
+                    className="w-full py-3 bg-indigo-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:bg-slate-900 transition-all flex items-center justify-center gap-2"
+                  >
                     <FaPlayCircle className="text-base" /> Launch Trial
                   </button>
-                  <button className="w-full py-3 bg-white text-slate-900 border border-slate-200 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm hover:border-indigo-400 transition-all">
+                  <button
+                    onClick={() => openWA_Prod(`Hello DVein Team, I want member access for: ${item.name}`)}
+                    className="w-full py-3 bg-white text-slate-900 border border-slate-200 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm hover:border-indigo-400 transition-all"
+                  >
                     <FaLock className="text-indigo-600" /> Member Access
                   </button>
                 </div>
@@ -277,11 +286,12 @@ const ProductsPage = () => {
 
       {/* FINAL CTA */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-24">
-        <Link to="/contact">
-          <button className="bg-slate-900 text-white px-10 py-5 rounded-xl font-semibold text-sm transition-all shadow-2xl hover:bg-indigo-600 hover:-translate-y-1">
-            Request Custom Node Activation <FaArrowRight className="inline ml-3" />
-          </button>
-        </Link>
+        <button
+          onClick={() => openWA_Prod('Hello DVein Team, I want to request a custom node activation for your product.')}
+          className="bg-slate-900 text-white px-10 py-5 rounded-xl font-semibold text-sm transition-all shadow-2xl hover:bg-indigo-600 hover:-translate-y-1"
+        >
+          Request Custom Node Activation <FaArrowRight className="inline ml-3" />
+        </button>
         <p className="mt-12 text-xs font-medium text-slate-300 tracking-wide">
           © 2026 DVEIN • PRODUCT INFRASTRUCTURE
         </p>

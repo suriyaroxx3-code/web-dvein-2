@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  FaSearch, FaTimes, FaCloudUploadAlt, FaCheckCircle, 
-  FaRocket, FaShieldAlt, FaUsers, FaArrowRight, FaBolt, 
+import {
+  FaSearch, FaTimes, FaCloudUploadAlt, FaCheckCircle,
+  FaRocket, FaShieldAlt, FaUsers, FaArrowRight, FaBolt,
   FaHeart, FaGlobe, FaMicrochip, FaCogs, FaHandsHelping, FaAward, FaNetworkWired
 } from 'react-icons/fa';
+
+const WA_CAREER = '918667363893';
 
 const CareerHub = () => {
   const [filter, setFilter] = useState('');
@@ -25,30 +27,48 @@ const CareerHub = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
-  const filteredJobs = liveJobs.filter(job => 
-    job.title.toLowerCase().includes(filter.toLowerCase()) || 
+  const filteredJobs = liveJobs.filter(job =>
+    job.title.toLowerCase().includes(filter.toLowerCase()) ||
     job.department.toLowerCase().includes(filter.toLowerCase())
   );
 
   const handleApplySubmit = async (e) => {
     e.preventDefault();
-    if (!window.confirm("Transmit mission profile?")) return;
     setIsSubmitting(true);
-    const data = new FormData();
-    Object.keys(formData).forEach(key => { if(key !== 'resume') data.append(key, formData[key]); });
-    data.append('jobTitle', selectedJob.title);
-    if (formData.resume) data.append('resume', formData.resume);
+
+    // Build WhatsApp message
+    const waText = [
+      `*Job Application — DVein Innovations*`,
+      ``,
+      `*Role:* ${selectedJob.title}`,
+      `*Name:* ${formData.firstName} ${formData.lastName}`,
+      `*Email:* ${formData.email}`,
+      `*Phone:* ${formData.phone}`,
+      `*Portfolio:* ${formData.portfolio || 'Not provided'}`,
+      ``,
+      `_Sent from DVein Career Hub_`,
+    ].join('\n');
+
+    // Save to backend silently
     try {
-        const res = await fetch("http://localhost:5000/api/public/apply", { method: 'POST', body: data });
-        if (res.ok) { setSubmitStatus('success'); setTimeout(() => { setSubmitStatus(null); setSelectedJob(null); }, 3000); }
-    } catch (err) { console.error(err); }
+      const data = new FormData();
+      Object.keys(formData).forEach(key => { if (key !== 'resume') data.append(key, formData[key]); });
+      data.append('jobTitle', selectedJob.title);
+      if (formData.resume) data.append('resume', formData.resume);
+      await fetch('http://localhost:5000/api/public/apply', { method: 'POST', body: data, signal: AbortSignal.timeout(5000) });
+    } catch (_) {}
+
+    // Open WhatsApp
+    window.open(`https://wa.me/${WA_CAREER}?text=${encodeURIComponent(waText)}`, '_blank');
+    setSubmitStatus('success');
+    setTimeout(() => { setSubmitStatus(null); setSelectedJob(null); }, 4000);
     setIsSubmitting(false);
   };
 
   return (
     <div className="font-sans text-slate-900 bg-white min-h-screen pt-24 selection:bg-purple-600 selection:text-white overflow-x-hidden flex flex-col items-center">
-      
-      {/* 1. HERO - CHINA SIZE (Small & Neat) */}
+
+      {/* 1. HERO */}
       <section className="w-full max-w-4xl px-6 py-12 flex flex-col items-center text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center">
            <span className="py-1 px-3 rounded-full bg-purple-50 text-purple-600 text-[9px] font-black tracking-widest mb-4 border border-purple-100 uppercase">Careers 2.0</span>
@@ -62,22 +82,20 @@ const CareerHub = () => {
         </motion.div>
       </section>
 
-      {/* 2. MISSION - BIG IMAGE & RICH CONTENT (Full Pack) */}
+      {/* 2. MISSION */}
       <section className="w-full py-20 px-6 bg-white border-y border-slate-50">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
               <div className="relative group">
                   <div className="absolute inset-0 bg-purple-600/10 rounded-[2rem] rotate-3 group-hover:rotate-0 transition-transform duration-500"></div>
-                  {/* Big Image */}
                   <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=100&w=1200&auto=format&fit=crop" alt="Rich Content" className="w-full h-full object-cover rounded-[2rem] shadow-2xl relative z-10" />
               </div>
               <div className="text-left space-y-8">
                   <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-slate-900 leading-none">Engineering <br/><span className="text-purple-600 italic">Excellence.</span></h2>
-                  {/* Rich Content - Multiple Paragraphs */}
                   <div className="space-y-6 text-slate-600 text-sm md:text-base font-medium leading-relaxed">
                     <p>Our engineering culture is built on the principles of speed and radical ownership. We don't just write code; we architect digital universes that solve real-world complexities at scale.</p>
                     <p>At Dvein, you are empowered to lead your own feature sets. From initial design patterns to global deployment, you own the entire lifecycle of the code you ship to millions of nodes.</p>
                     <div className="grid grid-cols-1 gap-4 pt-4">
-                        {[ 
+                        {[
                           {i: <FaMicrochip/>, t: "R&D Focus", d: "We dedicate 20% of time to future frameworks and AI research labs."},
                           {i: <FaNetworkWired/>, t: "Scalable Nodes", d: "Systems designed for 10x growth with zero performance leaks."}
                         ].map((item, i) => (
@@ -92,7 +110,7 @@ const CareerHub = () => {
           </div>
       </section>
 
-      {/* 3. DNA - KUTTY SIZE (Minimalist Cards) */}
+      {/* 3. DNA */}
       <section className="w-full py-20 px-6 bg-[#f8fafc] flex flex-col items-center">
           <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter mb-12 text-center">OUR DNA</h2>
           <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-3 gap-6 place-items-center">
@@ -108,11 +126,10 @@ const CareerHub = () => {
           </div>
       </section>
 
-      {/* 4. VISION - REAL TEAM IMAGE & LARGE TEXT (Rocket Logo Removed) */}
+      {/* 4. VISION */}
       <section className="w-full py-24 px-6 bg-white flex flex-col items-center">
           <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
               <div className="text-left">
-                  {/* Large Content Size as requested */}
                   <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-10 text-slate-900 leading-[1]">THE <span className="text-purple-600 italic">UPGRADE</span> YOU NEED.</h2>
                   <div className="space-y-8">
                       <p className="text-lg md:text-xl text-slate-500 font-bold leading-relaxed border-l-8 border-purple-100 pl-8">Join the collective that is defining the next generation of software engineering. No more boring tasks, only high-impact missions.</p>
@@ -127,13 +144,12 @@ const CareerHub = () => {
               </div>
               <div className="relative">
                   <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-600/5 rounded-full blur-3xl"></div>
-                  {/* Team Image instead of Rocket */}
                   <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=100&w=1200&auto=format&fit=crop" alt="Team Vision" className="w-full rounded-[4rem] shadow-2xl border-2 border-slate-100 grayscale hover:grayscale-0 transition-all duration-700" />
               </div>
           </div>
       </section>
 
-      {/* 5. OPEN MISSIONS - LIST STYLE */}
+      {/* 5. OPEN MISSIONS */}
       <section className="w-full py-20 px-6 bg-slate-900 flex flex-col items-center rounded-t-[3rem] md:rounded-t-[5rem] mx-4 shadow-2xl">
          <div className="max-w-3xl w-full flex flex-col items-center text-center px-4">
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-16 text-white italic">OPEN DROPS</h2>
@@ -152,23 +168,21 @@ const CareerHub = () => {
          </div>
       </section>
 
-      {/* 6. CTA - JOIN THE COLLECTIVE */}
+      {/* 6. CTA */}
       <section className="w-full py-24 px-4 flex flex-col items-center bg-white">
           <div className="w-full max-w-5xl relative rounded-[3rem] p-16 md:p-24 overflow-hidden bg-[#0a0f1c] text-center shadow-2xl flex flex-col items-center justify-center border border-white/5">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
               <div className="relative z-10 flex flex-col items-center">
                   <h2 className="text-3xl md:text-6xl font-black text-white mb-6 uppercase italic tracking-tighter leading-none">JOIN THE <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">COLLECTIVE.</span></h2>
-                  <a
-                    href="https://wa.me/919500181230?text=Hello%20DVein%20Team,%20I%20want%20to%20join%20the%20collective!"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => window.open(`https://wa.me/${WA_CAREER}?text=${encodeURIComponent('Hello DVein Team, I want to join the collective!')}`, '_blank')}
                     className="bg-white text-slate-900 px-12 py-4 rounded-full font-black text-[11px] uppercase tracking-[0.4em] hover:scale-105 transition-transform shadow-xl"
-                  >Touch In Now</a>
+                  >Touch In Now</button>
               </div>
           </div>
       </section>
 
-      {/* MODAL - NEAT SPLIT VIEW */}
+      {/* MODAL */}
       <AnimatePresence>
         {selectedJob && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -188,7 +202,13 @@ const CareerHub = () => {
                         <p className="text-slate-500 text-xs leading-relaxed font-bold border-l-4 border-purple-400 pl-6 italic uppercase tracking-tight">{selectedJob.description}</p>
                     </div>
                     <div className={`${activeTab === 'form' ? 'flex' : 'hidden md:flex'} w-full md:w-1/2 flex-col bg-white overflow-y-auto p-10 md:p-14`}>
-                        {submitStatus === 'success' ? <div className="h-full flex flex-col items-center justify-center text-center animate-fadeIn"><FaCheckCircle className="text-green-500 text-7xl mb-6 animate-bounce" /><h3 className="text-2xl font-black italic tracking-tight text-slate-900 uppercase">Mission Accepted</h3></div> :
+                        {submitStatus === 'success' ? (
+                          <div className="h-full flex flex-col items-center justify-center text-center animate-fadeIn">
+                            <FaCheckCircle className="text-green-500 text-7xl mb-6 animate-bounce" />
+                            <h3 className="text-2xl font-black italic tracking-tight text-slate-900 uppercase">WhatsApp Opened!</h3>
+                            <p className="text-slate-500 text-xs mt-3 font-bold uppercase">Tap Send in WhatsApp to complete</p>
+                          </div>
+                        ) : (
                         <form onSubmit={handleApplySubmit} className="space-y-4">
                             <h3 className="text-xl md:text-2xl font-black tracking-tight mb-8 italic border-b pb-4 uppercase text-slate-900">Boarding Pass</h3>
                             <div className="grid grid-cols-2 gap-4">
@@ -201,10 +221,13 @@ const CareerHub = () => {
                             <label className="flex flex-col items-center justify-center p-10 bg-purple-50/20 border-2 border-dashed border-purple-100 rounded-3xl cursor-pointer hover:bg-purple-100/20 transition-all group">
                                 <FaCloudUploadAlt className="text-purple-600 text-4xl mb-4 group-hover:scale-110 transition-transform" />
                                 <span className="text-[10px] font-black text-purple-600 uppercase text-center">{formData.resume ? formData.resume.name : "DROP FILE"}</span>
-                                <input type="file" required onChange={e => setFormData({...formData, resume: e.target.files[0]})} className="hidden" />
+                                <input type="file" onChange={e => setFormData({...formData, resume: e.target.files[0]})} className="hidden" />
                             </label>
-                            <button disabled={isSubmitting} className="w-full py-5 bg-slate-900 text-white rounded-xl font-black text-xs shadow-xl uppercase tracking-[0.3em] hover:bg-black transition-colors disabled:opacity-50">{isSubmitting ? "TRANSMITTING..." : "Submit Mission"}</button>
-                        </form>}
+                            <button type="submit" disabled={isSubmitting} className="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.4em] hover:bg-purple-600 transition-all disabled:opacity-50">
+                              {isSubmitting ? 'Opening WhatsApp...' : 'Apply via WhatsApp'}
+                            </button>
+                        </form>
+                        )}
                     </div>
                 </div>
              </motion.div>
@@ -212,6 +235,9 @@ const CareerHub = () => {
         )}
       </AnimatePresence>
 
+      <footer className="w-full py-10 text-center border-t border-slate-100">
+        <p className="text-xs text-slate-400">© 2026 DVein Innovations · Career Hub</p>
+      </footer>
     </div>
   );
 };

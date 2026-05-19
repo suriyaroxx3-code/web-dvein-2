@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import * as FaIcons from 'react-icons/fa';
-import { SiReact, SiPython } from 'react-icons/si';
 
 const getIcon = (iconName) => {
   const IconComponent = FaIcons[iconName];
@@ -32,7 +30,7 @@ const STATIC_DATA = {
     ai: [
       { _id: 1, week: "Week 1-2", title: "Python & Maths",        desc: "Advanced Python structures, NumPy, Pandas, and Linear Algebra for ML." },
       { _id: 2, week: "Week 3-5", title: "Machine Learning Ops",  desc: "Supervised Learning, Scikit-learn, and model evaluation metrics." },
-      { _id: 3, week: "Week 6-8", title: "Deep Learning & LLMs", desc: "Neural Networks, Transformers, and building RAG applications." },
+      { _id: 3, week: "Week 6-8", title: "Deep Learning & LLMs",  desc: "Neural Networks, Transformers, and building RAG applications." },
     ],
   },
   projects: [
@@ -51,13 +49,15 @@ const Training = () => {
   const [activeTab, setActiveTab] = useState('web');
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [data, setData] = useState(STATIC_DATA);
-  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', phone: '', portfolio: '', jobTitle: 'Internship Cohort 2026'
   });
   const [resume, setResume] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
+  const WA_NUMBER = '918667363893';
 
   useEffect(() => {
     fetch('http://localhost:5000/api/public/training-page')
@@ -66,36 +66,41 @@ const Training = () => {
       .catch(() => {});
   }, []);
 
-  const [submitStatus, setSubmitStatus] = useState(null); // null | 'success' | 'fallback'
-
   const handleApply = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setSubmitStatus(null);
-    const dataToSend = new FormData();
-    Object.keys(formData).forEach(key => dataToSend.append(key, formData[key]));
-    if (resume) dataToSend.append('resume', resume);
+
+    const waText = [
+      `*New Internship Application — DVein Innovations*`,
+      ``,
+      `*Name:* ${formData.firstName} ${formData.lastName}`,
+      `*Email:* ${formData.email}`,
+      `*Phone:* ${formData.phone}`,
+      `*Applying For:* ${formData.jobTitle}`,
+      `*Portfolio:* ${formData.portfolio || 'Not provided'}`,
+      ``,
+      `_Sent from DVein Website_`,
+    ].join('\n');
+
     try {
-      const response = await fetch('http://localhost:5000/api/public/apply', {
+      const dataToSend = new FormData();
+      Object.keys(formData).forEach(key => dataToSend.append(key, formData[key]));
+      if (resume) dataToSend.append('resume', resume);
+      await fetch('http://localhost:5000/api/public/apply', {
         method: 'POST',
         body: dataToSend,
-        signal: AbortSignal.timeout(8000)
+        signal: AbortSignal.timeout(5000),
       });
-      const result = await response.json();
-      if (result.success) {
-        setSubmitStatus('success');
-        setFormData({ firstName: '', lastName: '', email: '', phone: '', portfolio: '', jobTitle: 'Internship Cohort 2026' });
-        setResume(null);
-        e.target.reset();
-      } else {
-        setSubmitStatus('fallback');
-      }
-    } catch (err) {
-      // Backend not running — show WhatsApp/email fallback
-      setSubmitStatus('fallback');
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (_) {}
+
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`, '_blank');
+
+    setSubmitStatus('success');
+    setFormData({ firstName: '', lastName: '', email: '', phone: '', portfolio: '', jobTitle: 'Internship Cohort 2026' });
+    setResume(null);
+    e.target.reset();
+    setSubmitting(false);
   };
 
   return (
@@ -111,10 +116,18 @@ const Training = () => {
               Stop Learning Syntax. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600">Start Building Products.</span>
             </h1>
-            <p className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">Join an elite program designed by Senior Engineers. Master industry-standard tech through intense execution and real-world deployment.</p>
+            <p className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+              Join an elite program designed by Senior Engineers. Master industry-standard tech through intense execution and real-world deployment.
+            </p>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
-              <a href="https://forms.gle/GEWGy11JyF1mBuMe6" target="_blank" rel="noopener noreferrer" className="px-8 py-3.5 bg-purple-600 text-white rounded-xl font-bold shadow-lg hover:bg-purple-700 transition-all">Apply Now</a>
-              <button onClick={() => document.getElementById('domains').scrollIntoView({ behavior: 'smooth' })} className="px-8 py-3.5 bg-white text-gray-800 border border-gray-200 rounded-xl font-bold shadow-sm hover:bg-gray-50 transition-all">Explore Tracks</button>
+              <button
+                onClick={() => document.getElementById('apply-section').scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-3.5 bg-purple-600 text-white rounded-xl font-bold shadow-lg hover:bg-purple-700 transition-all"
+              >Apply Now</button>
+              <button
+                onClick={() => document.getElementById('domains').scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-3.5 bg-white text-gray-800 border border-gray-200 rounded-xl font-bold shadow-sm hover:bg-gray-50 transition-all"
+              >Explore Tracks</button>
             </div>
           </motion.div>
         </div>
@@ -147,7 +160,10 @@ const Training = () => {
                 <div className="flex flex-wrap gap-2 mb-8">
                   {domain.skills?.map((s, i) => <span key={i} className="px-2.5 py-1 bg-white border border-gray-100 rounded-lg text-[10px] font-bold text-gray-500 uppercase">{s}</span>)}
                 </div>
-                <a href="https://forms.gle/GEWGy11JyF1mBuMe6" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-purple-600 font-black text-xs uppercase tracking-widest">Apply Now <FaIcons.FaArrowRight /></a>
+                <button
+                  onClick={() => document.getElementById('apply-section').scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center gap-2 text-purple-600 font-black text-xs uppercase tracking-widest"
+                >Apply Now <FaIcons.FaArrowRight /></button>
               </motion.div>
             ))}
           </div>
@@ -182,36 +198,152 @@ const Training = () => {
         </div>
       </div>
 
-      {/* APPLICATION CTA */}
+      {/* APPLICATION FORM */}
       <div id="apply-section" className="py-24 max-w-4xl mx-auto px-6">
-        <div className="bg-white p-8 md:p-14 rounded-[2.5rem] shadow-2xl border border-purple-50 text-center">
-          <h2 className="text-3xl font-black mb-3">Ready to Apply?</h2>
-          <p className="text-gray-400 text-sm font-medium mb-8">Fill out our application form. Our team will review and reach out to you on WhatsApp and Email within 48 hours.</p>
-          <a
-            href="https://forms.gle/GEWGy11JyF1mBuMe6"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-10 py-4 bg-purple-600 text-white rounded-xl font-bold text-base hover:bg-purple-700 transition-all shadow-xl mb-6"
-          >
-            Apply Now — Fill the Form
-          </a>
-          <p className="text-xs text-gray-400 mb-4">Or reach us directly:</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a
-              href="https://wa.me/919500181230?text=Hello%20DVein%20Team!%20I%20want%20to%20apply%20for%20the%20Internship%20Cohort%202026."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 max-w-xs mx-auto sm:mx-0 bg-green-500 text-white text-center py-2.5 px-4 rounded-lg font-bold text-sm hover:bg-green-600 transition"
-            >
-              📱 WhatsApp Us
-            </a>
-            <a
-              href="mailto:info@dveininnovations.com?subject=Internship%20Application%202026"
-              className="flex-1 max-w-xs mx-auto sm:mx-0 bg-dveinBlue text-white text-center py-2.5 px-4 rounded-lg font-bold text-sm hover:opacity-90 transition"
-            >
-              ✉️ Email Us
-            </a>
+        <div className="bg-white p-8 md:p-14 rounded-[2.5rem] shadow-2xl border border-purple-50 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-purple-600 via-indigo-500 to-blue-500 rounded-t-[2.5rem]" />
+
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-black mb-3">Apply Now</h2>
+            <p className="text-gray-400 text-sm font-medium">
+              Fill the form — WhatsApp will open with your details ready to send.
+            </p>
           </div>
+
+          {submitStatus === 'success' && (
+            <div className="flex flex-col items-center gap-4 py-12 text-center">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-green-500 text-4xl">
+                <FaIcons.FaWhatsapp />
+              </div>
+              <h3 className="text-2xl font-black text-gray-900">WhatsApp Opened! ✅</h3>
+              <p className="text-gray-500 text-sm max-w-sm leading-relaxed">
+                Your application details are pre-filled in WhatsApp.<br />
+                <strong className="text-gray-700">Just tap Send</strong> to complete your application.
+              </p>
+              <a
+                href={`https://wa.me/${WA_NUMBER}`}
+                target="_blank" rel="noopener noreferrer"
+                className="mt-2 flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-green-600 transition shadow"
+              >
+                <FaIcons.FaWhatsapp className="text-lg" /> Open WhatsApp Again
+              </a>
+              <button onClick={() => setSubmitStatus(null)} className="mt-1 text-xs text-gray-400 underline">
+                Submit another application
+              </button>
+            </div>
+          )}
+
+          {!submitStatus && (
+            <form onSubmit={handleApply} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">First Name *</label>
+                  <input
+                    type="text" required
+                    value={formData.firstName}
+                    onChange={e => setFormData(p => ({ ...p, firstName: e.target.value }))}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all text-sm"
+                    placeholder="Arjun"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Last Name *</label>
+                  <input
+                    type="text" required
+                    value={formData.lastName}
+                    onChange={e => setFormData(p => ({ ...p, lastName: e.target.value }))}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all text-sm"
+                    placeholder="Kumar"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Email Address *</label>
+                  <input
+                    type="email" required
+                    value={formData.email}
+                    onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all text-sm"
+                    placeholder="arjun@gmail.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Phone Number *</label>
+                  <input
+                    type="tel" required
+                    value={formData.phone}
+                    onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all text-sm"
+                    placeholder="+91 98765 43210"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Applying For *</label>
+                <select
+                  required
+                  value={formData.jobTitle}
+                  onChange={e => setFormData(p => ({ ...p, jobTitle: e.target.value }))}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all text-sm text-gray-700"
+                >
+                  <option value="Internship Cohort 2026">Internship Cohort 2026</option>
+                  <option value="Full Stack Mafia Track">Full Stack Mafia Track</option>
+                  <option value="AI Architects Track">AI Architects Track</option>
+                  <option value="Cloud Commanders Track">Cloud Commanders Track</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Portfolio / LinkedIn / GitHub <span className="text-gray-300 font-normal">(optional)</span>
+                </label>
+                <input
+                  type="url"
+                  value={formData.portfolio}
+                  onChange={e => setFormData(p => ({ ...p, portfolio: e.target.value }))}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all text-sm"
+                  placeholder="https://github.com/yourname"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Resume <span className="text-gray-300 font-normal">(optional, PDF/DOC)</span>
+                </label>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={e => setResume(e.target.files[0])}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-purple-500 transition-all text-sm text-gray-600 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-purple-50 file:text-purple-700"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-4 bg-purple-600 text-white rounded-xl font-bold text-base hover:bg-purple-700 transition-all shadow-xl flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {submitting ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                    Opening WhatsApp...
+                  </>
+                ) : (
+                  <><FaIcons.FaWhatsapp className="text-lg" /> Submit via WhatsApp</>
+                )}
+              </button>
+
+              <p className="text-center text-xs text-gray-400">
+                WhatsApp will open with your details pre-filled. Just tap Send to complete.
+              </p>
+            </form>
+          )}
         </div>
       </div>
 

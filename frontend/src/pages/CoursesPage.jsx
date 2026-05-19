@@ -13,6 +13,57 @@ const AcademyPage = () => {
   const [trainings, setTrainings] = useState([]);
   const [activeAccordion, setActiveAccordion] = useState(null);
 
+  // ── Enrollment Modal State ──────────────────────────────────────────────────
+  const WA_NUMBER = '918667363893';
+  const [enrollModal, setEnrollModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState('');
+  const [enrollForm, setEnrollForm] = useState({ firstName: '', lastName: '', email: '', phone: '', portfolio: '' });
+  const [enrollSubmitting, setEnrollSubmitting] = useState(false);
+  const [enrollStatus, setEnrollStatus] = useState(null); // null | 'success'
+
+  const openEnroll = (courseTitle = 'DVein Course') => {
+    setSelectedCourse(courseTitle);
+    setEnrollStatus(null);
+    setEnrollForm({ firstName: '', lastName: '', email: '', phone: '', portfolio: '' });
+    setEnrollModal(true);
+  };
+
+  const handleEnroll = async (e) => {
+    e.preventDefault();
+    setEnrollSubmitting(true);
+
+    // ── Build WhatsApp message ──
+    const waText = [
+      `*New Course Enrollment — DVein Innovations*`,
+      ``,
+      `*Course:* ${selectedCourse}`,
+      `*Name:* ${enrollForm.firstName} ${enrollForm.lastName}`,
+      `*Email:* ${enrollForm.email}`,
+      `*Phone:* ${enrollForm.phone}`,
+      `*Portfolio:* ${enrollForm.portfolio || 'Not provided'}`,
+      ``,
+      `_Sent from DVein Website_`,
+    ].join('\n');
+
+    // ── Save to backend silently ──
+    try {
+      const data = new FormData();
+      Object.entries(enrollForm).forEach(([k, v]) => data.append(k, v));
+      data.append('jobTitle', selectedCourse);
+      await fetch('http://localhost:5000/api/public/apply', {
+        method: 'POST',
+        body: data,
+        signal: AbortSignal.timeout(5000),
+      });
+    } catch (_) { /* silent */ }
+
+    // ── Open WhatsApp ──
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`, '_blank');
+
+    setEnrollStatus('success');
+    setEnrollSubmitting(false);
+  };
+
   useEffect(() => {
     fetch('http://localhost:5000/api/public/trainings')
       .then(res => res.json())
@@ -54,14 +105,12 @@ const AcademyPage = () => {
           </p>
 
           <div className="flex justify-center gap-4">
-            <a
-              href="https://forms.gle/GEWGy11JyF1mBuMe6"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => openEnroll('DVein Academy — Full Program')}
               className="bg-indigo-600 text-white px-9 py-4 rounded-xl font-medium text-sm shadow hover:bg-indigo-700 transition"
             >
-              Browse Curriculum
-            </a>
+              Enroll Now
+            </button>
             <a
               href="/DVein_Roadmap_LightTheme_removed.pdf"
               target="_blank"
@@ -159,14 +208,12 @@ const AcademyPage = () => {
             <FaCheckCircle className="text-indigo-500" /> Active Program
           </div>
 
-          <a
-            href="https://forms.gle/GEWGy11JyF1mBuMe6"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => openEnroll(course.title)}
             className="w-full mt-4 py-2.5 bg-indigo-600 text-white rounded-lg font-medium text-sm hover:bg-indigo-700 transition block text-center"
           >
             Enroll Now
-          </a>
+          </button>
         </div>
       </motion.div>
     ))}
@@ -232,6 +279,75 @@ const AcademyPage = () => {
         </p>
       </footer>
 
+      {/* ── Enrollment Modal ─────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {enrollModal && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={e => { if (e.target === e.currentTarget) setEnrollModal(false); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white rounded-[2rem] p-8 md:p-10 w-full max-w-lg shadow-2xl relative overflow-hidden max-h-[90vh] overflow-y-auto"
+            >
+              {/* Accent bar */}
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-600 to-purple-500" />
+
+              {/* Close */}
+              <button
+                onClick={() => setEnrollModal(false)}
+                className="absolute top-5 right-5 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 transition text-sm font-bold"
+              >✕</button>
+
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-slate-900">Enroll in Course</h3>
+                <p className="text-sm text-slate-500 mt-1">{selectedCourse}</p>
+              </div>
+
+              {/* Success */}
+              {enrollStatus === 'success' ? (
+                <div className="flex flex-col items-center gap-4 py-8 text-center">
+                  <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-green-500 text-5xl">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="40" height="40"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900">WhatsApp Opened!</h3>
+                  <p className="text-slate-500 text-sm">Tap <strong>Send</strong> in WhatsApp to complete your enrollment.</p>
+                  <button onClick={() => setEnrollModal(false)} className="mt-4 text-xs text-indigo-600 underline">Close</button>
+                </div>
+              ) : (
+                <form onSubmit={handleEnroll} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <input required placeholder="First Name"
+                      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200 w-full"
+                      onChange={e => setEnrollForm(p => ({...p, firstName: e.target.value}))} />
+                    <input required placeholder="Last Name"
+                      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200 w-full"
+                      onChange={e => setEnrollForm(p => ({...p, lastName: e.target.value}))} />
+                  </div>
+                  <input required type="email" placeholder="Email Address"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                    onChange={e => setEnrollForm(p => ({...p, email: e.target.value}))} />
+                  <input required placeholder="Phone / WhatsApp"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                    onChange={e => setEnrollForm(p => ({...p, phone: e.target.value}))} />
+                  <input placeholder="Portfolio / LinkedIn (optional)"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                    onChange={e => setEnrollForm(p => ({...p, portfolio: e.target.value}))} />
+                  <button type="submit" disabled={enrollSubmitting}
+                    className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center justify-center gap-2 disabled:opacity-60">
+                    {enrollSubmitting ? 'Opening WhatsApp...' : (
+                      <><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg> Enroll via WhatsApp</>
+                    )}
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

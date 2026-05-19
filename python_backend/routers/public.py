@@ -150,30 +150,68 @@ async def apply_job(
     return {"success": True, "message": "Application Submitted Successfully!"}
 
 
-def _send_application_email(first, last, email, phone, portfolio, job_title, resume_path):
+SMTP_HOST = os.getenv("SMTP_HOST", "smtp-relay.brevo.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+COMPANY_EMAIL = os.getenv("COMPANY_EMAIL", "info@dveininnovations.com")
+
+
+def _get_smtp_connection():
+    """Return an authenticated SMTP connection using env credentials."""
     EMAIL_USER = os.getenv("EMAIL_USER")
     EMAIL_PASS = os.getenv("EMAIL_PASS")
     if not EMAIL_USER or not EMAIL_PASS:
+        return None
+    try:
+        server = smtplib.SMTP(SMTP_HOST, SMTP_PORT)
+        server.starttls()
+        server.login(EMAIL_USER, EMAIL_PASS)
+        return server
+    except Exception as e:
+        print(f"SMTP connection failed: {e}")
+        return None
+
+
+def _send_application_email(first, last, email, phone, portfolio, job_title, resume_path):
+    EMAIL_USER = os.getenv("EMAIL_USER")
+    if not EMAIL_USER:
+        return
+
+    server = _get_smtp_connection()
+    if not server:
         return
 
     try:
-        msg = MIMEMultipart()
-        RECIPIENT = "jayasri@dveininnovations.com"
-        msg["From"]    = f"DVein Careers <{EMAIL_USER}>"
-        msg["To"]      = RECIPIENT
-        msg["Subject"] = f"New Internship Application Received: {job_title}"
+        # ── 1. Notify company ──────────────────────────────────────────────
+        company_msg = MIMEMultipart()
+        company_msg["From"]    = f"DVein Careers <{EMAIL_USER}>"
+        company_msg["To"]      = COMPANY_EMAIL
+        company_msg["Subject"] = f"🚀 New Application: {job_title} — {first} {last}"
 
-        body = f"""
-        <h3>New Internship Application</h3>
-        <p><strong>Name:</strong> {first} {last}</p>
-        <p><strong>Email:</strong> {email}</p>
-        <p><strong>Phone:</strong> {phone}</p>
-        <p><strong>Portfolio:</strong> {portfolio or 'Not Provided'}</p>
-        <p><strong>Applied For:</strong> {job_title}</p>
-        <hr/>
-        <p style="color:#555;font-size:12px;">This application has been automatically stored in the DVein admin panel database.</p>
+        company_body = f"""
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden;">
+          <div style="background:#6d28d9;padding:24px 32px;">
+            <h2 style="color:#fff;margin:0;">New Application Received</h2>
+            <p style="color:#c4b5fd;margin:4px 0 0;">DVein Internship / Course Enrollment</p>
+          </div>
+          <div style="padding:32px;">
+            <table style="width:100%;border-collapse:collapse;font-size:14px;">
+              <tr><td style="padding:8px 0;color:#555;width:140px;"><strong>Name</strong></td>
+                  <td style="padding:8px 0;color:#111;">{first} {last}</td></tr>
+              <tr><td style="padding:8px 0;color:#555;"><strong>Email</strong></td>
+                  <td style="padding:8px 0;color:#111;">{email}</td></tr>
+              <tr><td style="padding:8px 0;color:#555;"><strong>Phone</strong></td>
+                  <td style="padding:8px 0;color:#111;">{phone}</td></tr>
+              <tr><td style="padding:8px 0;color:#555;"><strong>Applied For</strong></td>
+                  <td style="padding:8px 0;color:#6d28d9;font-weight:bold;">{job_title}</td></tr>
+              <tr><td style="padding:8px 0;color:#555;"><strong>Portfolio</strong></td>
+                  <td style="padding:8px 0;color:#111;">{portfolio or 'Not Provided'}</td></tr>
+            </table>
+            <hr style="border:none;border-top:1px solid #eee;margin:24px 0;"/>
+            <p style="color:#888;font-size:12px;">This application is stored in the DVein admin dashboard.</p>
+          </div>
+        </div>
         """
-        msg.attach(MIMEText(body, "html"))
+        company_msg.attach(MIMEText(company_body, "html"))
 
         if resume_path and os.path.exists(resume_path):
             with open(resume_path, "rb") as f:
@@ -181,10 +219,150 @@ def _send_application_email(first, last, email, phone, portfolio, job_title, res
                 part.set_payload(f.read())
             encoders.encode_base64(part)
             part.add_header("Content-Disposition", f'attachment; filename="{os.path.basename(resume_path)}"')
-            msg.attach(part)
+            company_msg.attach(part)
 
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(EMAIL_USER, EMAIL_PASS)
-            server.sendmail(EMAIL_USER, RECIPIENT, msg.as_string())
+        server.sendmail(EMAIL_USER, COMPANY_EMAIL, company_msg.as_string())
+
+        # ── 2. Confirmation to applicant ───────────────────────────────────
+        user_msg = MIMEMultipart()
+        user_msg["From"]    = f"DVein Innovations <{EMAIL_USER}>"
+        user_msg["To"]      = email
+        user_msg["Subject"] = f"✅ Application Received — {job_title} | DVein"
+
+        user_body = f"""
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden;">
+          <div style="background:#6d28d9;padding:24px 32px;">
+            <h2 style="color:#fff;margin:0;">Hi {first}, we got your application! 🎉</h2>
+            <p style="color:#c4b5fd;margin:4px 0 0;">DVein Innovations — {job_title}</p>
+          </div>
+          <div style="padding:32px;">
+            <p style="font-size:15px;color:#333;line-height:1.7;">
+              Thank you for applying for <strong>{job_title}</strong> at DVein Innovations.
+              Our team will review your profile and get back to you within <strong>48 hours</strong>
+              via WhatsApp and email.
+            </p>
+            <div style="background:#f5f3ff;border-left:4px solid #6d28d9;padding:16px 20px;border-radius:8px;margin:24px 0;">
+              <p style="margin:0;font-size:13px;color:#555;"><strong>What happens next?</strong></p>
+              <ul style="margin:8px 0 0;padding-left:20px;font-size:13px;color:#555;line-height:2;">
+                <li>Our team reviews your application</li>
+                <li>We reach out on WhatsApp / Email to schedule an intro call</li>
+                <li>If selected, you receive your onboarding kit</li>
+              </ul>
+            </div>
+            <p style="font-size:13px;color:#888;">
+              Questions? Reach us at
+              <a href="mailto:{COMPANY_EMAIL}" style="color:#6d28d9;">{COMPANY_EMAIL}</a>
+              or WhatsApp <a href="https://wa.me/919500181230" style="color:#6d28d9;">+91 95001 81230</a>.
+            </p>
+          </div>
+          <div style="background:#f9fafb;padding:16px 32px;text-align:center;">
+            <p style="font-size:11px;color:#aaa;margin:0;">© 2026 DVein Innovations · Alpha City IT Park, OMR, Chennai</p>
+          </div>
+        </div>
+        """
+        user_msg.attach(MIMEText(user_body, "html"))
+        server.sendmail(EMAIL_USER, email, user_msg.as_string())
+
     except Exception as e:
-        print(f"Email failed: {e}")
+        print(f"Email send failed: {e}")
+    finally:
+        try:
+            server.quit()
+        except Exception:
+            pass
+
+
+# ── Contact form endpoint ──────────────────────────────────────────────────────
+
+@router.post("/contact")
+async def contact_form(
+    name:    str = Form(...),
+    email:   str = Form(...),
+    service: str = Form(...),
+    message: str = Form(...),
+):
+    """Handle the Contact page form — sends to company + auto-reply to sender."""
+    EMAIL_USER = os.getenv("EMAIL_USER")
+    if not EMAIL_USER:
+        # Still return success so the UI doesn't break if email isn't configured
+        return {"success": True, "message": "Message received! We will get back to you soon."}
+
+    server = _get_smtp_connection()
+    if not server:
+        return {"success": True, "message": "Message received! We will get back to you soon."}
+
+    try:
+        # ── Notify company ────────────────────────────────────────────────
+        company_msg = MIMEMultipart()
+        company_msg["From"]    = f"DVein Website <{EMAIL_USER}>"
+        company_msg["To"]      = COMPANY_EMAIL
+        company_msg["Subject"] = f"📩 New Contact Message: {service} — {name}"
+
+        company_body = f"""
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden;">
+          <div style="background:#0f172a;padding:24px 32px;">
+            <h2 style="color:#fff;margin:0;">New Contact Form Submission</h2>
+            <p style="color:#94a3b8;margin:4px 0 0;">DVein Website — Contact Page</p>
+          </div>
+          <div style="padding:32px;">
+            <table style="width:100%;border-collapse:collapse;font-size:14px;">
+              <tr><td style="padding:8px 0;color:#555;width:140px;"><strong>Name</strong></td>
+                  <td style="padding:8px 0;color:#111;">{name}</td></tr>
+              <tr><td style="padding:8px 0;color:#555;"><strong>Email</strong></td>
+                  <td style="padding:8px 0;color:#111;">{email}</td></tr>
+              <tr><td style="padding:8px 0;color:#555;"><strong>Service</strong></td>
+                  <td style="padding:8px 0;color:#111;">{service}</td></tr>
+            </table>
+            <div style="background:#f8fafc;border-radius:8px;padding:16px;margin-top:16px;">
+              <p style="margin:0;color:#333;font-size:14px;line-height:1.7;">{message}</p>
+            </div>
+          </div>
+        </div>
+        """
+        company_msg.attach(MIMEText(company_body, "html"))
+        server.sendmail(EMAIL_USER, COMPANY_EMAIL, company_msg.as_string())
+
+        # ── Auto-reply to sender ──────────────────────────────────────────
+        user_msg = MIMEMultipart()
+        user_msg["From"]    = f"DVein Innovations <{EMAIL_USER}>"
+        user_msg["To"]      = email
+        user_msg["Subject"] = "✅ We received your message — DVein Innovations"
+
+        user_body = f"""
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden;">
+          <div style="background:#0f172a;padding:24px 32px;">
+            <h2 style="color:#fff;margin:0;">Hi {name}, thanks for reaching out!</h2>
+            <p style="color:#94a3b8;margin:4px 0 0;">DVein Innovations</p>
+          </div>
+          <div style="padding:32px;">
+            <p style="font-size:15px;color:#333;line-height:1.7;">
+              We received your message about <strong>{service}</strong> and our team will
+              respond within <strong>2 hours</strong> during business hours.
+            </p>
+            <div style="background:#f0fdf4;border-left:4px solid #22c55e;padding:16px 20px;border-radius:8px;margin:24px 0;">
+              <p style="margin:0;font-size:13px;color:#166534;">
+                <strong>Your message:</strong><br/>{message}
+              </p>
+            </div>
+            <p style="font-size:13px;color:#888;">
+              Need urgent help? WhatsApp us at
+              <a href="https://wa.me/919500181230" style="color:#22c55e;">+91 95001 81230</a>
+            </p>
+          </div>
+          <div style="background:#f9fafb;padding:16px 32px;text-align:center;">
+            <p style="font-size:11px;color:#aaa;margin:0;">© 2026 DVein Innovations · Alpha City IT Park, OMR, Chennai</p>
+          </div>
+        </div>
+        """
+        user_msg.attach(MIMEText(user_body, "html"))
+        server.sendmail(EMAIL_USER, email, user_msg.as_string())
+
+    except Exception as e:
+        print(f"Contact email failed: {e}")
+    finally:
+        try:
+            server.quit()
+        except Exception:
+            pass
+
+    return {"success": True, "message": "Message sent! We will get back to you within 2 hours."}

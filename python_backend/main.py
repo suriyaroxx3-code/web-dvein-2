@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load .env file from the backend directory
 
 from database import JsonDatabase
 from routers import auth, public, admin
