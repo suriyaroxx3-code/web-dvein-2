@@ -55,7 +55,9 @@ const AcademyPage = () => {
         body: data,
         signal: AbortSignal.timeout(5000),
       });
-    } catch (_) { /* silent */ }
+    } catch (error) {
+      console.warn('Could not save course enrollment to backend before opening WhatsApp.', error);
+    }
 
     // ── Open WhatsApp ──
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`, '_blank');
@@ -85,18 +87,18 @@ const AcademyPage = () => {
   ];
 
   return (
-    <div className="font-sans text-slate-900 bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen pt-24 pb-16">
+    <div className="font-sans text-slate-900 bg-gradient-to-br from-blue-50 via-white to-blue-50 min-h-screen pt-24 pb-16">
 
       {/* HERO */}
       <section className="max-w-7xl mx-auto px-6 pt-10 pb-20 text-center">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-          <span className="inline-block py-1.5 px-4 rounded-full bg-white text-indigo-600 font-medium text-xs mb-6 border border-indigo-100 shadow-sm">
+          <span className="inline-block py-1.5 px-4 rounded-full bg-white text-blue-600 font-medium text-xs mb-6 border border-blue-100 shadow-sm">
             Academy Hub
           </span>
 
           <h1 className="text-4xl md:text-6xl font-semibold text-slate-900 leading-tight mb-6 tracking-tight">
             Master the <br />
-            <span className="text-indigo-600">Engineering Stack</span>
+            <span className="text-blue-600">Engineering Stack</span>
           </h1>
 
           <p className="max-w-3xl mx-auto text-base text-slate-600 leading-relaxed font-medium mb-10">
@@ -107,7 +109,7 @@ const AcademyPage = () => {
           <div className="flex justify-center gap-4">
             <button
               onClick={() => openEnroll('DVein Academy — Full Program')}
-              className="bg-indigo-600 text-white px-9 py-4 rounded-xl font-medium text-sm shadow hover:bg-indigo-700 transition"
+              className="bg-blue-600 text-white px-9 py-4 rounded-xl font-medium text-sm shadow hover:bg-blue-700 transition"
             >
               Enroll Now
             </button>
@@ -132,7 +134,7 @@ const AcademyPage = () => {
               whileHover={{ y: -6 }} 
               className="bg-white/70 backdrop-blur-xl p-8 rounded-2xl border border-white shadow-md hover:shadow-xl transition-all text-center"
             >
-              <div className="text-3xl text-indigo-600 mb-4">{feature.icon}</div>
+              <div className="text-3xl text-blue-600 mb-4">{feature.icon}</div>
               <h3 className="font-semibold text-slate-900 text-lg mb-2">{feature.title}</h3>
               <p className="text-sm text-slate-600 leading-relaxed">{feature.desc}</p>
             </motion.div>
@@ -144,10 +146,10 @@ const AcademyPage = () => {
       <AnimatedRoadmap
         title="Engineering Roadmap"
         subtitle="Structured workflow for technical growth — from fundamentals to global deployment."
-        accent="bg-indigo-500"
+        accent="bg-blue-500"
         steps={[
-          { icon: <FaSearch />,          label: 'Core Scan',          desc: 'Deep assessment of your skills and career goals to align the learning path.', color: 'bg-indigo-600' },
-          { icon: <FaLayerGroup />,      label: 'Architecture Build', desc: 'Hands-on architecture design, system thinking, and production patterns.', color: 'bg-purple-600' },
+          { icon: <FaSearch />,          label: 'Core Scan',          desc: 'Deep assessment of your skills and career goals to align the learning path.', color: 'bg-blue-600' },
+          { icon: <FaLayerGroup />,      label: 'Architecture Build', desc: 'Hands-on architecture design, system thinking, and production patterns.', color: 'bg-blue-600' },
           { icon: <FaSyncAlt />,         label: 'Live Sync',          desc: 'Real-time collaboration with engineering teams on live production builds.', color: 'bg-blue-600' },
           { icon: <FaCloudUploadAlt />,  label: 'Global Deploy',      desc: 'Ship globally-certified projects and receive your ledger-verified credential.', color: 'bg-cyan-600' },
         ]}
@@ -204,13 +206,13 @@ const AcademyPage = () => {
               "Production-grade program focused on real-world engineering practices, scalable systems, and collaborative workflows."}
           </p>
 
-          <div className="flex items-center gap-2 text-indigo-600 text-sm font-medium mt-auto">
-            <FaCheckCircle className="text-indigo-500" /> Active Program
+          <div className="flex items-center gap-2 text-blue-600 text-sm font-medium mt-auto">
+            <FaCheckCircle className="text-blue-500" /> Active Program
           </div>
 
           <button
             onClick={() => openEnroll(course.title)}
-            className="w-full mt-4 py-2.5 bg-indigo-600 text-white rounded-lg font-medium text-sm hover:bg-indigo-700 transition block text-center"
+            className="w-full mt-4 py-2.5 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition block text-center"
           >
             Enroll Now
           </button>
@@ -234,7 +236,7 @@ const AcademyPage = () => {
               >
                 {faq.question}
                 {activeAccordion === index ? 
-                  <FaChevronUp className="text-indigo-600" /> : 
+                  <FaChevronUp className="text-blue-600" /> : 
                   <FaChevronDown className="text-slate-300" />
                 }
               </button>
@@ -258,7 +260,7 @@ const AcademyPage = () => {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-6 mb-20">
-        <div className="rounded-3xl p-12 md:p-20 bg-gradient-to-r from-indigo-900 to-slate-900 text-center shadow-2xl">
+        <div className="rounded-3xl p-12 md:p-20 bg-gradient-to-r from-blue-900 to-slate-900 text-center shadow-2xl">
           <h2 className="text-3xl md:text-4xl font-semibold text-white mb-6">
             Ready to start your engineering journey?
           </h2>
@@ -294,7 +296,7 @@ const AcademyPage = () => {
               className="bg-white rounded-[2rem] p-8 md:p-10 w-full max-w-lg shadow-2xl relative overflow-hidden max-h-[90vh] overflow-y-auto"
             >
               {/* Accent bar */}
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-600 to-purple-500" />
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-blue-500" />
 
               {/* Close */}
               <button
@@ -315,29 +317,29 @@ const AcademyPage = () => {
                   </div>
                   <h3 className="text-xl font-bold text-slate-900">WhatsApp Opened!</h3>
                   <p className="text-slate-500 text-sm">Tap <strong>Send</strong> in WhatsApp to complete your enrollment.</p>
-                  <button onClick={() => setEnrollModal(false)} className="mt-4 text-xs text-indigo-600 underline">Close</button>
+                  <button onClick={() => setEnrollModal(false)} className="mt-4 text-xs text-blue-600 underline">Close</button>
                 </div>
               ) : (
                 <form onSubmit={handleEnroll} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <input required placeholder="First Name"
-                      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200 w-full"
+                      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-200 w-full"
                       onChange={e => setEnrollForm(p => ({...p, firstName: e.target.value}))} />
                     <input required placeholder="Last Name"
-                      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200 w-full"
+                      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-200 w-full"
                       onChange={e => setEnrollForm(p => ({...p, lastName: e.target.value}))} />
                   </div>
                   <input required type="email" placeholder="Email Address"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-200"
                     onChange={e => setEnrollForm(p => ({...p, email: e.target.value}))} />
                   <input required placeholder="Phone / WhatsApp"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-200"
                     onChange={e => setEnrollForm(p => ({...p, phone: e.target.value}))} />
                   <input placeholder="Portfolio / LinkedIn (optional)"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-200"
                     onChange={e => setEnrollForm(p => ({...p, portfolio: e.target.value}))} />
                   <button type="submit" disabled={enrollSubmitting}
-                    className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center justify-center gap-2 disabled:opacity-60">
+                    className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition flex items-center justify-center gap-2 disabled:opacity-60">
                     {enrollSubmitting ? 'Opening WhatsApp...' : (
                       <><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg> Enroll via WhatsApp</>
                     )}

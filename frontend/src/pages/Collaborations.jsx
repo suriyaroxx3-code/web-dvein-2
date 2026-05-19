@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaGlobeAmericas, FaHandshake, FaChartLine, FaNetworkWired, 
@@ -7,12 +7,8 @@ import {
 } from 'react-icons/fa';
 
 const Collaborations = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded] = useState(true);
   const [activeFaq, setActiveFaq] = useState(null);
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
 
   const handleCollaborate = () => {
     window.open(
@@ -38,7 +34,7 @@ const Collaborations = () => {
         "Cross-Border Compliance",
         "Enterprise Support Desk"
       ],
-      accent: "border-indigo-600"
+      accent: "border-blue-600"
     },
     {
       title: "R&D Innovation Partnership",
@@ -60,7 +56,7 @@ const Collaborations = () => {
         "Structured Onboarding",
         "Cybersecurity Compliance"
       ],
-      accent: "border-indigo-400"
+      accent: "border-blue-400"
     }
   ];
 
@@ -81,17 +77,17 @@ const Collaborations = () => {
   ];
 
   return (
-    <div className="font-sans text-slate-900 bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen pt-24 pb-16">
+    <div className="font-sans text-slate-900 bg-gradient-to-br from-blue-50 via-white to-blue-50 min-h-screen pt-24 pb-16">
 
       {/* HERO */}
       <section className="max-w-7xl mx-auto px-6 pt-10 pb-20 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isLoaded ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }}>
-          <span className="inline-block py-1.5 px-4 rounded-full bg-white text-indigo-600 font-medium text-xs mb-6 border border-indigo-100">
+          <span className="inline-block py-1.5 px-4 rounded-full bg-white text-blue-600 font-medium text-xs mb-6 border border-blue-100">
             Global Partnership Hub
           </span>
 
           <h1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight mb-6 tracking-tight">
-            Global Reach. <span className="text-indigo-600">DVein Precision.</span>
+            Global Reach. <span className="text-blue-600">DVein Precision.</span>
           </h1>
 
           <p className="max-w-3xl mx-auto text-base text-slate-600 leading-relaxed font-medium mb-10">
@@ -101,7 +97,7 @@ const Collaborations = () => {
           <div className="flex justify-center gap-4">
             <button
               onClick={handleCollaborate}
-              className="inline-flex items-center gap-3 bg-indigo-600 text-white px-9 py-4 rounded-xl font-semibold text-sm transition-all shadow hover:bg-indigo-700"
+              className="inline-flex items-center gap-3 bg-blue-600 text-white px-9 py-4 rounded-xl font-semibold text-sm transition-all shadow hover:bg-blue-700"
             >
               <FaHandshake className="text-lg" /> Start a Collaboration
             </button>
@@ -113,7 +109,7 @@ const Collaborations = () => {
       <section className="max-w-6xl mx-auto px-6 mb-24 grid grid-cols-2 lg:grid-cols-4 gap-6">
         {globalMetrics.map((metric, i) => (
           <motion.div key={i} whileHover={{ y: -5 }} className="bg-white p-8 rounded-2xl border border-slate-100 transition-all hover:shadow-lg text-center">
-            <div className="text-2xl text-indigo-600 mb-4 flex justify-center">{metric.icon}</div>
+            <div className="text-2xl text-blue-600 mb-4 flex justify-center">{metric.icon}</div>
             <h3 className="text-3xl font-semibold text-slate-900 mb-1">{metric.count}</h3>
             <p className="text-sm text-slate-500">{metric.label}</p>
           </motion.div>
@@ -173,7 +169,7 @@ const Collaborations = () => {
 
                 <button 
                   onClick={handleCollaborate}
-                  className="w-full py-3 bg-indigo-600 text-white rounded-lg font-medium text-sm hover:bg-indigo-700 transition"
+                  className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition"
                 >
                   Discuss This Model
                 </button>
@@ -197,7 +193,7 @@ const Collaborations = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {frameworkNodes.map((node, i) => (
             <motion.div key={i} whileHover={{ scale: 1.02 }} className="flex gap-6 p-6 rounded-2xl bg-white border border-slate-100 hover:shadow-lg transition">
-              <div className="text-3xl text-indigo-600">{node.icon}</div>
+              <div className="text-3xl text-blue-600">{node.icon}</div>
               <div>
                 <h4 className="text-lg font-semibold text-slate-900 mb-2">{node.title}</h4>
                 <p className="text-sm text-slate-600 leading-relaxed">{node.detail}</p>
@@ -221,7 +217,7 @@ const Collaborations = () => {
                   onClick={() => setActiveFaq(activeFaq === i ? null : i)}
                   className="w-full flex justify-between items-center p-5 text-left font-medium text-slate-800"
                 >
-                  {faq.q} <FaInfoCircle className="text-indigo-600" />
+                  {faq.q} <FaInfoCircle className="text-blue-600" />
                 </button>
 
                 <AnimatePresence>
@@ -254,7 +250,7 @@ const Collaborations = () => {
 
         <button 
           onClick={handleCollaborate}
-          className="inline-flex items-center gap-3 bg-slate-900 text-white px-10 py-4 rounded-xl font-medium text-sm shadow hover:bg-indigo-600 transition"
+          className="inline-flex items-center gap-3 bg-slate-900 text-white px-10 py-4 rounded-xl font-medium text-sm shadow hover:bg-blue-600 transition"
         >
           <FaWhatsapp className="text-lg" /> Contact DVein Partnerships
         </button>

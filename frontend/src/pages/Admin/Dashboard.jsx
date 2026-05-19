@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
     FaTrash, FaSignOutAlt, FaPlus, FaEdit, FaTimes, 
@@ -14,12 +14,10 @@ const Dashboard = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [currentId, setCurrentId] = useState(null);
     const [formData, setFormData] = useState({ title: '', desc: '', iconName: 'FaCode', link: '/services', image: null });
-    const [preview, setPreview] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [trainings, setTrainings] = useState([]);
     const [showTrainingForm, setShowTrainingForm] = useState(false);
     const [newTraining, setNewTraining] = useState({ title: '', duration: '', tag: 'Online', category: 'internship', image: null });
-    const [trainingPreview, setTrainingPreview] = useState(null);
     const [stats, setStats] = useState({ jobApps: 0, internApps: 0, services: 0, trainings: 0, products: 0 });
     const [applications, setApplications] = useState([]);
     const [jobs, setJobs] = useState([]);
@@ -33,13 +31,7 @@ const Dashboard = () => {
     const [productData, setProductData] = useState({ name: '', description: '', price: '', version: '1.0', category: 'Software', image: null });
     const [productPreview, setProductPreview] = useState(null);
 
-    useEffect(() => {
-        const token = localStorage.getItem('adminToken');
-        if (!token) navigate('/admin/login');
-        fetchData();
-    }, [navigate]);
-
-    const fetchData = () => {
+    const fetchData = useCallback(() => {
         const token = localStorage.getItem('adminToken');
         const headers = { 'Authorization': `Bearer ${token}` };
         fetch('http://localhost:5000/api/admin/stats', { headers }).then(res => res.json()).then(data => setStats(data)).catch(err => console.error(err));
@@ -49,17 +41,22 @@ const Dashboard = () => {
         fetch('http://localhost:5000/api/public/jobs').then(res => res.json()).then(data => setJobs(data)).catch(err => console.error(err));
         // Fetch Products
         fetch('http://localhost:5000/api/public/products').then(res => res.json()).then(data => setProducts(data)).catch(err => console.error(err));
-    };
+    }, []);
+
+    useEffect(() => {
+        const token = localStorage.getItem('adminToken');
+        if (!token) navigate('/admin/login');
+        fetchData();
+    }, [fetchData, navigate]);
 
     // --- EXISTING HANDLERS (மாற்றப்படவில்லை) ---
     const handleJobSubmit = async (e) => { e.preventDefault(); const token = localStorage.getItem('adminToken'); const res = await fetch('http://localhost:5000/api/admin/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(jobData) }); if(res.ok) { alert("Job Posted & Emails Synced!"); setShowJobForm(false); fetchData(); } };
     const handleDeleteJob = async (id) => { if(!window.confirm("Delete?")) return; const token = localStorage.getItem('adminToken'); await fetch(`http://localhost:5000/api/admin/jobs/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } }); fetchData(); };
-    const handleFileChange = (e) => { const file = e.target.files[0]; setFormData({ ...formData, image: file }); setPreview(URL.createObjectURL(file)); };
+    const handleFileChange = (e) => { const file = e.target.files[0]; setFormData({ ...formData, image: file }); };
     const handleSubmit = async (e) => { e.preventDefault(); const token = localStorage.getItem('adminToken'); const data = new FormData(); Object.keys(formData).forEach(key => data.append(key, formData[key])); const url = isEditing ? `http://localhost:5000/api/admin/services/${currentId}` : 'http://localhost:5000/api/admin/services'; await fetch(url, { method: isEditing ? 'PUT' : 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: data }); resetForm(); fetchData(); };
-    const handleEdit = (service) => { setIsEditing(true); setCurrentId(service._id); setFormData({ title: service.title, desc: service.desc, iconName: service.iconName, link: service.link, image: null }); setPreview(service.image); setShowForm(true); window.scrollTo(0,0); };
+    const handleEdit = (service) => { setIsEditing(true); setCurrentId(service._id); setFormData({ title: service.title, desc: service.desc, iconName: service.iconName, link: service.link, image: null }); setShowForm(true); window.scrollTo(0,0); };
     const handleDelete = async (id) => { if(!window.confirm("Delete?")) return; const token = localStorage.getItem('adminToken'); await fetch(`http://localhost:5000/api/admin/services/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } }); fetchData(); };
-    const resetForm = () => { setFormData({ title: '', desc: '', iconName: 'FaCode', link: '/services', image: null }); setPreview(null); setIsEditing(false); setShowForm(false); };
-    const handleTrainingFile = (e) => { const file = e.target.files[0]; setNewTraining({ ...newTraining, image: file }); setTrainingPreview(URL.createObjectURL(file)); };
+    const resetForm = () => { setFormData({ title: '', desc: '', iconName: 'FaCode', link: '/services', image: null }); setIsEditing(false); setShowForm(false); };
     const handleAddTraining = async (e) => { e.preventDefault(); const token = localStorage.getItem('adminToken'); const data = new FormData(); Object.keys(newTraining).forEach(key => data.append(key, newTraining[key])); const res = await fetch('http://localhost:5000/api/admin/training', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: data }); if(res.ok) { setShowTrainingForm(false); fetchData(); } };
     const handleDeleteTraining = async (id) => { if(!window.confirm("Delete?")) return; const token = localStorage.getItem('adminToken'); await fetch(`http://localhost:5000/api/admin/training/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } }); fetchData(); };
     const toggleSelect = (id) => { setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]); };
@@ -89,7 +86,7 @@ const Dashboard = () => {
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
                     <StatCard title="Job Apps" count={stats.jobApps} icon={<FaBriefcase/>} color="bg-blue-600" />
-                    <StatCard title="Intern Apps" count={stats.internApps} icon={<FaUsers/>} color="bg-purple-600" />
+                    <StatCard title="Intern Apps" count={stats.internApps} icon={<FaUsers/>} color="bg-blue-600" />
                     <StatCard title="Services" count={stats.services} icon={<FaBriefcase/>} color="bg-emerald-600" />
                     <StatCard title="Products" count={products.length} icon={<FaBox/>} color="bg-orange-600" />
                 </div>
@@ -98,7 +95,7 @@ const Dashboard = () => {
                 <div className="mb-16 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-sm font-black uppercase tracking-widest text-slate-700">Product Ecosystem</h2>
-                        <button onClick={() => setShowProductForm(!showProductForm)} className="bg-purple-600 text-white px-5 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-purple-200">
+                        <button onClick={() => setShowProductForm(!showProductForm)} className="bg-blue-600 text-white px-5 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-blue-200">
                             {showProductForm ? <FaTimes /> : <FaPlus />} Activate Product
                         </button>
                     </div>
@@ -146,7 +143,7 @@ const Dashboard = () => {
                                 <input required className="p-3 rounded-xl outline-none" placeholder="Department" onChange={e => setJobData({...jobData, department: e.target.value})} />
                                 <input required className="p-3 rounded-xl outline-none" placeholder="Salary Range" onChange={e => setJobData({...jobData, salary: e.target.value})} />
                                 <textarea required className="p-3 rounded-xl outline-none lg:col-span-3" placeholder="About the Role" rows="2" onChange={e => setJobData({...jobData, description: e.target.value})} />
-                                <button className="bg-purple-600 text-white rounded-xl font-black uppercase tracking-widest py-3 lg:col-span-3">Deploy Role</button>
+                                <button className="bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest py-3 lg:col-span-3">Deploy Role</button>
                             </form>
                             <button onClick={() => setShowJobForm(false)} className="mt-4 text-slate-400 font-bold uppercase tracking-widest">Cancel</button>
                         </div>
@@ -176,7 +173,7 @@ const Dashboard = () => {
                             <thead>
                                 <tr className="text-gray-400 uppercase border-b pb-4">
                                     <th className="pb-4 w-10">
-                                        <input type="checkbox" onChange={handleSelectAll} checked={selectedIds.length === applications.length && applications.length > 0} className="rounded accent-purple-600 cursor-pointer" />
+                                        <input type="checkbox" onChange={handleSelectAll} checked={selectedIds.length === applications.length && applications.length > 0} className="rounded accent-blue-600 cursor-pointer" />
                                     </th>
                                     <th className="pb-4">Candidate</th>
                                     <th className="pb-4">Applied For</th>
@@ -186,14 +183,14 @@ const Dashboard = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-50">
                                 {applications.map(app => (
-                                    <tr key={app._id} className={`hover:bg-gray-50 transition group ${selectedIds.includes(app._id) ? 'bg-purple-50/30' : ''}`}>
+                                    <tr key={app._id} className={`hover:bg-gray-50 transition group ${selectedIds.includes(app._id) ? 'bg-blue-50/30' : ''}`}>
                                         <td className="py-4">
-                                            <input type="checkbox" checked={selectedIds.includes(app._id)} onChange={() => toggleSelect(app._id)} className="rounded accent-purple-600 cursor-pointer" />
+                                            <input type="checkbox" checked={selectedIds.includes(app._id)} onChange={() => toggleSelect(app._id)} className="rounded accent-blue-600 cursor-pointer" />
                                         </td>
                                         <td className="py-4 font-bold text-gray-700">{app.firstName} {app.lastName}</td>
-                                        <td className="py-4"><span className="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-black uppercase">{app.jobTitle}</span></td>
+                                        <td className="py-4"><span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase">{app.jobTitle}</span></td>
                                         <td className="py-4">
-                                            {app.portfolio ? <a href={app.portfolio} target="_blank" className="text-purple-500 font-bold hover:underline">Link</a> : <span className="text-gray-300">N/A</span>}
+                                            {app.portfolio ? <a href={app.portfolio} target="_blank" className="text-blue-500 font-bold hover:underline">Link</a> : <span className="text-gray-300">N/A</span>}
                                         </td>
                                         <td className="py-4 text-right flex items-center justify-end gap-4">
                                             <a href={`http://localhost:5000/${app.resumePath}`} target="_blank" rel="noreferrer" className="text-blue-600 font-bold flex items-center gap-1"><FaFileDownload /> RESUME</a>
@@ -242,15 +239,15 @@ const Dashboard = () => {
                 <div className="pb-12">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-sm font-bold text-gray-700 uppercase tracking-widest">Training Modules ({trainings.length})</h2>
-                        {!showTrainingForm && <button onClick={() => setShowTrainingForm(true)} className="bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold uppercase text-[10px] tracking-widest"><FaPlus /> New Training</button>}
+                        {!showTrainingForm && <button onClick={() => setShowTrainingForm(true)} className="bg-blue-600 text-white px-5 py-2 rounded-xl font-bold uppercase text-[10px] tracking-widest"><FaPlus /> New Training</button>}
                     </div>
                     {showTrainingForm && (
-                        <div className="bg-white p-8 rounded-2xl border border-indigo-100 shadow-xl mb-12 animate-fadeIn relative text-xs">
+                        <div className="bg-white p-8 rounded-2xl border border-blue-100 shadow-xl mb-12 animate-fadeIn relative text-xs">
                             <button onClick={() => setShowTrainingForm(false)} className="absolute top-4 right-4 text-gray-400"><FaTimes/></button>
                             <form onSubmit={handleAddTraining} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input required value={newTraining.title} className="p-3 border rounded-xl" placeholder="Title" onChange={e => setNewTraining({...newTraining, title: e.target.value})} />
                                 <input required value={newTraining.duration} className="p-3 border rounded-xl" placeholder="Duration" onChange={e => setNewTraining({...newTraining, duration: e.target.value})} />
-                                <button className="bg-indigo-600 text-white rounded-xl font-bold py-3 uppercase tracking-widest md:col-span-2">Save Program</button>
+                                <button className="bg-blue-600 text-white rounded-xl font-bold py-3 uppercase tracking-widest md:col-span-2">Save Program</button>
                             </form>
                         </div>
                     )}

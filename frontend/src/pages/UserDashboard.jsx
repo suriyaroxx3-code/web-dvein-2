@@ -3,17 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaBriefcase, FaGraduationCap } from 'react-icons/fa';
 
 const UserDashboard = () => {
-    const [user, setUser] = useState(null);
+    const [user] = useState(() => {
+        const userData = localStorage.getItem('user');
+        return userData ? JSON.parse(userData) : null;
+    });
     const navigate = useNavigate();
 
     useEffect(() => {
-        const userData = localStorage.getItem('user');
-        if (!userData) {
+        if (!user) {
             navigate('/login');
-        } else {
-            setUser(JSON.parse(userData));
         }
-    }, [navigate]);
+    }, [navigate, user]);
 
     if (!user) return null;
 
@@ -36,7 +36,7 @@ const UserDashboard = () => {
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
                         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2"><FaBriefcase/> Job Applications</h2>
                         <p className="text-gray-500 mb-4">Track the status of your applications.</p>
-                        <button onClick={() => navigate('/career-hub')} className="px-6 py-2 bg-purple-600 text-white rounded-lg font-bold">Find Jobs</button>
+                        <button onClick={() => navigate('/career-hub')} className="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold">Find Jobs</button>
                     </div>
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
                         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2"><FaGraduationCap/> Enrolled Courses</h2>

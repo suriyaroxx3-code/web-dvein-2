@@ -39,7 +39,9 @@ const Contact = () => {
       await fetch('http://localhost:5000/api/public/contact', {
         method: 'POST', body: data, signal: AbortSignal.timeout(5000),
       });
-    } catch (_) {}
+    } catch (error) {
+      console.warn('Could not save contact message to backend before opening WhatsApp.', error);
+    }
 
     // Open WhatsApp
     window.open(`https://wa.me/${WA_OTHER}?text=${encodeURIComponent(waText)}`, '_blank');
@@ -127,13 +129,13 @@ const Contact = () => {
           </motion.div>
 
           {/* Card 3: Location */}
-          <motion.div variants={itemVars} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:border-purple-300 transition-all duration-300 group md:col-span-2 lg:col-span-1">
-             <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center text-purple-600 text-xl mb-6 group-hover:scale-110 transition-transform">
+          <motion.div variants={itemVars} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:border-blue-300 transition-all duration-300 group md:col-span-2 lg:col-span-1">
+             <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 text-xl mb-6 group-hover:scale-110 transition-transform">
                 <FaMapMarkerAlt />
              </div>
              <h3 className="text-2xl font-bold text-gray-900 mb-2">Visit HQ</h3>
              <p className="text-gray-500 mb-6 text-sm">Alpha City IT Park, No.25, OMR, Navalur, Chennai – 600 130.</p>
-             <a href="https://maps.google.com" target="_blank" className="text-lg font-bold text-purple-600 hover:underline flex items-center gap-2">
+             <a href="https://maps.google.com" target="_blank" className="text-lg font-bold text-blue-600 hover:underline flex items-center gap-2">
                 Get Directions <FaArrowRight className="text-sm"/>
              </a>
           </motion.div>

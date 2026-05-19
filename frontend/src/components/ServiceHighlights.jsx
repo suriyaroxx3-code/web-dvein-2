@@ -90,7 +90,7 @@ const ServiceHighlights = () => {
                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
                        />
                    ) : (
-                       <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center text-4xl text-blue-500">
+                       <div className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-50 flex items-center justify-center text-4xl text-blue-500">
                           {getIcon(service.iconName)}
                        </div>
                    )}

@@ -35,7 +35,7 @@ const Login = () => {
         } else {
             setError(data.message || "Invalid credentials.");
         }
-    } catch (err) {
+    } catch {
         setError("Server Error.");
     } finally {
         setLoading(false);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ✅ FIXED: Removed duplicate declaration and invalid 'FaCpu'
@@ -22,13 +22,6 @@ import { FaRocket as FaRocketLaunch } from "react-icons/fa";
 
 const StudentProjects = () => {
   const [activeTab, setActiveTab] = useState('all');
-  const [isSyncing, setIsSyncing] = useState(true);
-
-  useEffect(() => {
-    // Initializing high-performance logic nodes
-    const timer = setTimeout(() => setIsSyncing(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   // --- 1. PERFORMANCE METRICS (Compact Enterprise Layout) ---
   const projectStats = [
@@ -132,16 +125,16 @@ const StudentProjects = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-900 pt-16 overflow-x-hidden selection:bg-indigo-600 selection:text-white">
+    <div className="min-h-screen bg-white font-sans text-slate-900 pt-16 overflow-x-hidden selection:bg-blue-600 selection:text-white">
       
       {/* 1. HERO - PURE WHITE PROFESSIONAL */}
       <section className="max-w-7xl mx-auto px-6 py-24 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <span className="inline-block py-1.5 px-4 rounded-full bg-indigo-50 text-indigo-600 font-extrabold tracking-widest uppercase text-[10px] mb-8 border border-indigo-100">
+          <span className="inline-block py-1.5 px-4 rounded-full bg-blue-50 text-blue-600 font-extrabold tracking-widest uppercase text-[10px] mb-8 border border-blue-100">
              Innovation Hub Activated
           </span>
           <h1 className="text-4xl md:text-7xl font-extrabold text-slate-900 leading-tight mb-8 tracking-tight uppercase">
-            Engineering <span className="text-indigo-600">The Future.</span> <br/>
+            Engineering <span className="text-blue-600">The Future.</span> <br/>
             One Project Node at a Time.
           </h1>
           <p className="max-w-3xl mx-auto text-base md:text-lg text-slate-500 leading-relaxed font-medium mb-12">
@@ -154,7 +147,7 @@ const StudentProjects = () => {
               href="/DVein_Projects_List.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 bg-slate-900 text-white px-10 py-5 rounded-2xl font-extrabold text-xs uppercase tracking-widest shadow-xl hover:bg-indigo-600 transition-all transform hover:-translate-y-1"
+              className="flex items-center gap-3 bg-slate-900 text-white px-10 py-5 rounded-2xl font-extrabold text-xs uppercase tracking-widest shadow-xl hover:bg-blue-600 transition-all transform hover:-translate-y-1"
             >
               <FaCloudDownloadAlt className="text-xl" /> Download Project Ledger (PDF)
             </a>
@@ -170,7 +163,7 @@ const StudentProjects = () => {
               whileHover={{ y: -5 }}
               className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 text-center hover:bg-white hover:shadow-2xl transition-all group"
             >
-              <div className="text-2xl text-indigo-600 mb-4 flex justify-center group-hover:scale-110 transition-transform">
+              <div className="text-2xl text-blue-600 mb-4 flex justify-center group-hover:scale-110 transition-transform">
                 {stat.icon}
               </div>
               <h3 className="text-3xl font-extrabold text-slate-900 mb-1">{stat.count}</h3>
@@ -184,12 +177,12 @@ const StudentProjects = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
             <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 uppercase tracking-tight">Why Students Choose DVein.</h2>
-            <div className="w-16 h-1.5 bg-indigo-600 mx-auto rounded-full"></div>
+            <div className="w-16 h-1.5 bg-blue-600 mx-auto rounded-full"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {whyBestFeatures.map((f, i) => (
               <div key={i} className="bg-white p-10 rounded-[2.5rem] border border-slate-100 hover:shadow-xl transition-all group">
-                <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-xl mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all">
                   <FaCheckCircle />
                 </div>
                 <h3 className="text-sm font-black text-slate-900 mb-4 uppercase tracking-tight">{f.t}</h3>
@@ -205,11 +198,11 @@ const StudentProjects = () => {
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="space-y-10">
               <h2 className="text-3xl md:text-5xl font-extrabold uppercase mb-8 tracking-tight leading-tight italic">
-                The Hardware <br/><span className="text-indigo-400">Node Inventory.</span>
+                The Hardware <br/><span className="text-blue-400">Node Inventory.</span>
               </h2>
               <div className="grid grid-cols-2 gap-4">
                 {["Dual-Core ESP32", "LoRa SX1278", "Biometric Nodes", "RTOS Kernels", "STM32 Bluepill", "Telemetry Hub"].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10 font-bold text-[9px] uppercase tracking-widest text-indigo-300 group hover:bg-indigo-600 hover:text-white transition-all">
+                  <div key={i} className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10 font-bold text-[9px] uppercase tracking-widest text-blue-300 group hover:bg-blue-600 hover:text-white transition-all">
                     <FaBolt className="group-hover:animate-pulse" /> {item}
                   </div>
                 ))}
@@ -218,7 +211,7 @@ const StudentProjects = () => {
             <div className="relative">
                <img src="https://images.unsplash.com/photo-1555664424-778a1e5e1b48?q=80&w=2070" className="rounded-[3rem] border-2 border-slate-700 shadow-2xl h-80 w-full object-cover" alt="Lab" />
                <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-2xl border border-slate-100 flex items-center gap-4">
-                  <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-2xl">
+                  <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white text-2xl">
                      <FaMemory />
                   </div>
                   <div className="text-left text-slate-900">
@@ -242,7 +235,7 @@ const StudentProjects = () => {
               <button 
                 key={cat.id} 
                 onClick={() => setActiveTab(cat.id)} 
-                className={`px-5 py-2 rounded-lg font-extrabold text-[10px] uppercase tracking-widest transition-all ${activeTab === cat.id ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                className={`px-5 py-2 rounded-lg font-extrabold text-[10px] uppercase tracking-widest transition-all ${activeTab === cat.id ? 'bg-blue-600 text-white shadow-xl shadow-blue-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
               >
                 {cat.name}
               </button>
@@ -263,14 +256,14 @@ const StudentProjects = () => {
                  <div className="h-56 overflow-hidden relative">
                     <img src={project.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={project.title} />
                     <div className="absolute top-5 left-5">
-                        <span className="bg-white/95 px-3 py-1.5 rounded-lg text-[9px] font-extrabold text-indigo-600 uppercase shadow-sm border border-indigo-50">
+                        <span className="bg-white/95 px-3 py-1.5 rounded-lg text-[9px] font-extrabold text-blue-600 uppercase shadow-sm border border-blue-50">
                             {project.category} node
                         </span>
                     </div>
                  </div>
                  <div className="p-10 flex-grow flex flex-col">
                     <h3 className="text-xl font-extrabold text-slate-900 mb-3 uppercase tracking-tight">{project.title}</h3>
-                    <p className="text-[13px] text-slate-500 font-bold mb-6 leading-relaxed italic border-l-2 border-indigo-100 pl-4">{project.desc}</p>
+                    <p className="text-[13px] text-slate-500 font-bold mb-6 leading-relaxed italic border-l-2 border-blue-100 pl-4">{project.desc}</p>
                     <div className="flex flex-wrap gap-2 mb-10">
                         {project.tools.map((t, idx) => (
                           <span key={idx} className="bg-slate-50 text-slate-600 px-3 py-1 rounded-md text-[9px] font-extrabold uppercase tracking-tight">
@@ -280,7 +273,7 @@ const StudentProjects = () => {
                     </div>
                     <button
                       onClick={() => window.open(`https://wa.me/918667363893?text=${encodeURIComponent(`Hello DVein Team, I want to inspect the architecture of: ${project.title}`)}`, '_blank')}
-                      className="mt-auto w-full py-4 bg-slate-900 text-white rounded-xl font-extrabold text-[10px] uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all flex items-center justify-center gap-3"
+                      className="mt-auto w-full py-4 bg-slate-900 text-white rounded-xl font-extrabold text-[10px] uppercase tracking-[0.2em] hover:bg-blue-600 transition-all flex items-center justify-center gap-3"
                     >
                         Inspect Architecture <FaArrowRightLong />
                     </button>
@@ -296,10 +289,10 @@ const StudentProjects = () => {
       <AnimatedRoadmap
         title="The Innovation Execution Cycle"
         subtitle="From raw idea to global-grade deployment — powered by real engineering discipline."
-        accent="bg-indigo-400"
+        accent="bg-blue-400"
         steps={[
-          { icon: <FaLightbulb />,       label: 'Ideation Node',   desc: 'Conceptualizing disruptive frameworks and defining the problem worth solving.', color: 'bg-indigo-500' },
-          { icon: <FaProjectDiagram />,  label: 'Logic Mesh',      desc: 'Designing decentralized architecture nodes, data flows, and system contracts.', color: 'bg-violet-600' },
+          { icon: <FaLightbulb />,       label: 'Ideation Node',   desc: 'Conceptualizing disruptive frameworks and defining the problem worth solving.', color: 'bg-blue-500' },
+          { icon: <FaProjectDiagram />,  label: 'Logic Mesh',      desc: 'Designing decentralized architecture nodes, data flows, and system contracts.', color: 'bg-blue-600' },
           { icon: <FaTools />,           label: 'Assembly Sync',   desc: 'Building production-grade prototypes with peer reviews and quality gates.', color: 'bg-blue-600' },
           { icon: <FaGlobe />,           label: 'Global Deploy',   desc: 'Final activation, CI/CD pipeline, and worldwide sync for maximum impact.', color: 'bg-cyan-600' },
         ]}
@@ -311,9 +304,9 @@ const StudentProjects = () => {
             whileInView={{ scale: [0.9, 1], opacity: [0, 1] }}
             className="max-w-4xl mx-auto bg-slate-900 p-20 rounded-[4rem] shadow-4xl relative overflow-hidden text-white"
           >
-             <FaRocketLaunch className="text-[15rem] text-indigo-600/10 absolute -top-20 -right-20 -rotate-45" />
+             <FaRocketLaunch className="text-[15rem] text-blue-600/10 absolute -top-20 -right-20 -rotate-45" />
              <h2 className="text-4xl md:text-5xl font-extrabold mb-10 uppercase tracking-tighter italic">
-               Activate Your <br/><span className="text-indigo-500">Project Node.</span>
+               Activate Your <br/><span className="text-blue-500">Project Node.</span>
              </h2>
              <p className="max-w-xl mx-auto text-slate-400 font-bold uppercase text-xs mb-12 tracking-widest">
                Join our next batch of student innovators and turn your ideas into physical industrial mastery.
@@ -322,7 +315,7 @@ const StudentProjects = () => {
                href="https://wa.me/918667363893?text=Hello%20DVein%20Team,%20I%20am%20interested%20in%20launching%20a%20project%20node."
                target="_blank"
                rel="noopener noreferrer"
-               className="inline-block bg-indigo-600 text-white px-16 py-6 rounded-2xl font-extrabold text-xs uppercase tracking-[0.4em] shadow-3xl hover:bg-white hover:text-indigo-600 transition-all transform hover:-translate-y-2"
+               className="inline-block bg-blue-600 text-white px-16 py-6 rounded-2xl font-extrabold text-xs uppercase tracking-[0.4em] shadow-3xl hover:bg-white hover:text-blue-600 transition-all transform hover:-translate-y-2"
              >
                 Launch Project Node
              </a>

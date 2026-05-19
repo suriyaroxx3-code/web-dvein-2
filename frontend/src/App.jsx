@@ -5,7 +5,7 @@ import Navbar from './components/Navbar';
 
 // PAGES
 import Home from './pages/Home';
-import Training from './pages/Training';
+import Training from './pages/internships';
 import Products from './pages/Products';
 import CareerHub from './pages/CareerHub';
 import Contact from './pages/Contact';

@@ -8,9 +8,9 @@ import { useRef } from 'react';
  *   title    — section heading
  *   subtitle — section subheading
  *   steps    — array of { icon, label, desc, color }
- *   accent   — tailwind color class for connectors (default "bg-indigo-500")
+ *   accent   — tailwind color class for connectors (default "bg-blue-500")
  */
-const AnimatedRoadmap = ({ title, subtitle, steps, accent = 'bg-indigo-500' }) => {
+const AnimatedRoadmap = ({ title, subtitle, steps, accent = 'bg-blue-500' }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -55,7 +55,7 @@ const AnimatedRoadmap = ({ title, subtitle, steps, accent = 'bg-indigo-500' }) =
             >
               {/* Step circle */}
               <motion.div
-                className={`w-16 h-16 rounded-2xl ${step.color || 'bg-indigo-600'} flex items-center justify-center text-white text-2xl shadow-lg mb-4 ring-4 ring-white/10`}
+                className={`w-16 h-16 rounded-2xl ${step.color || 'bg-blue-600'} flex items-center justify-center text-white text-2xl shadow-lg mb-4 ring-4 ring-white/10`}
                 whileHover={{ scale: 1.12, rotate: 3 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
@@ -97,10 +97,10 @@ const AnimatedRoadmap = ({ title, subtitle, steps, accent = 'bg-indigo-500' }) =
               transition={{ duration: 0.5, delay: 0.15 + i * 0.13 }}
             >
               {/* Dot on line */}
-              <div className={`absolute left-[-8px] top-1 w-4 h-4 rounded-full ${step.color || 'bg-indigo-600'} ring-2 ring-white/20 shadow`} />
+              <div className={`absolute left-[-8px] top-1 w-4 h-4 rounded-full ${step.color || 'bg-blue-600'} ring-2 ring-white/20 shadow`} />
 
               <div className="flex items-start gap-4">
-                <div className={`w-11 h-11 rounded-xl ${step.color || 'bg-indigo-600'} flex items-center justify-center text-white text-lg shadow shrink-0`}>
+                <div className={`w-11 h-11 rounded-xl ${step.color || 'bg-blue-600'} flex items-center justify-center text-white text-lg shadow shrink-0`}>
                   {step.icon}
                 </div>
                 <div>

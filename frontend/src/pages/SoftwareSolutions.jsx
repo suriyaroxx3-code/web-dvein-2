@@ -38,7 +38,7 @@ const industries = [
 
 const techCategories = [
   { title: "Frontend", stack: [{ icon: <SiReact className="text-cyan-400" />, name: "React.js" }, { icon: <FaCode className="text-orange-500" />, name: "Next.js" }, { icon: <FaCode className="text-blue-500" />, name: "Tailwind" }] },
-  { title: "Backend", stack: [{ icon: <SiNodedotjs className="text-green-600" />, name: "Node.js" }, { icon: <SiPython className="text-blue-400" />, name: "Python" }, { icon: <FaCode className="text-purple-600" />, name: "FastAPI" }] },
+  { title: "Backend", stack: [{ icon: <SiNodedotjs className="text-green-600" />, name: "Node.js" }, { icon: <SiPython className="text-blue-400" />, name: "Python" }, { icon: <FaCode className="text-blue-600" />, name: "FastAPI" }] },
   { title: "Database", stack: [{ icon: <SiMongodb className="text-green-500" />, name: "MongoDB" }, { icon: <SiPostgresql className="text-blue-700" />, name: "PostgreSQL" }, { icon: <SiFirebase className="text-yellow-500" />, name: "Firebase" }] },
   { title: "Cloud & AI", stack: [{ icon: <FaAws className="text-orange-500" />, name: "AWS" }, { icon: <SiDocker className="text-blue-500" />, name: "Docker" }, { icon: <SiTensorflow className="text-orange-600" />, name: "TensorFlow" }] },
 ];
@@ -58,17 +58,17 @@ const SoftwareSolutions = () => {
 
   return (
     // ✨ MIXED COLOR BACKGROUND (Consistent Theme) ✨
-    <div className="font-sans text-gray-900 bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen pt-24 pb-16 selection:bg-purple-500 selection:text-white">
+    <div className="font-sans text-gray-900 bg-gradient-to-br from-blue-50 via-white to-blue-50 min-h-screen pt-24 pb-16 selection:bg-blue-500 selection:text-white">
       
       {/* === HERO SECTION === */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24 text-center">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <span className="inline-block py-1 px-3 rounded-full bg-white border border-purple-100 text-purple-600 text-sm font-bold tracking-wider mb-4 shadow-sm">
+            <span className="inline-block py-1 px-3 rounded-full bg-white border border-blue-100 text-blue-600 text-sm font-bold tracking-wider mb-4 shadow-sm">
               ENGINEERING EXCELLENCE
             </span>
             <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 font-heading mb-6 leading-tight">
              Transforming Ideas into <br/>
-             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">Digital Reality</span>
+             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-600">Digital Reality</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
             We are a full-cycle software development company. From conceptualization to deployment, we build robust, scalable, and secure digital products.
@@ -76,7 +76,7 @@ const SoftwareSolutions = () => {
             <div className="flex justify-center gap-4">
                <button
                  onClick={() => openWA_SS('Hello DVein Team, I want to start a software project with you.')}
-                 className="px-8 py-4 bg-purple-600 text-white rounded-xl font-bold shadow-lg hover:bg-purple-700 hover:-translate-y-1 transition-all"
+                 className="px-8 py-4 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700 hover:-translate-y-1 transition-all"
                >Start Your Project</button>
                <button onClick={() => document.getElementById('services').scrollIntoView({ behavior: 'smooth' })} className="px-8 py-4 bg-white text-gray-800 border border-gray-200 rounded-xl font-bold shadow-sm hover:bg-gray-50 transition-all">Explore Services</button>
             </div>
@@ -95,7 +95,7 @@ const SoftwareSolutions = () => {
                transition={{ delay: i * 0.1 }}
                className="bg-white/60 backdrop-blur-md p-6 rounded-2xl border border-white/50 shadow-sm hover:shadow-md transition-all"
              >
-                <div className="text-3xl text-purple-600 mb-4">{feature.icon}</div>
+                <div className="text-3xl text-blue-600 mb-4">{feature.icon}</div>
                 <h3 className="font-bold text-gray-900 text-lg mb-2">{feature.title}</h3>
                 <p className="text-sm text-gray-600 leading-relaxed">{feature.desc}</p>
              </motion.div>
@@ -107,10 +107,10 @@ const SoftwareSolutions = () => {
       <AnimatedRoadmap
         title="Our Development Process"
         subtitle="A transparent, agile workflow engineered for speed, quality, and scale."
-        accent="bg-purple-500"
+        accent="bg-blue-500"
         steps={[
-          { icon: <FaSearch />,      label: 'Requirement Analysis',  desc: 'Deep dive into your goals, users, and technical needs to define the perfect scope.', color: 'bg-purple-600' },
-          { icon: <FaPencilRuler />, label: 'UI/UX & Architecture',  desc: 'Design system blueprints, wireframes, and scalable tech architecture.', color: 'bg-indigo-600' },
+          { icon: <FaSearch />,      label: 'Requirement Analysis',  desc: 'Deep dive into your goals, users, and technical needs to define the perfect scope.', color: 'bg-blue-600' },
+          { icon: <FaPencilRuler />, label: 'UI/UX & Architecture',  desc: 'Design system blueprints, wireframes, and scalable tech architecture.', color: 'bg-blue-600' },
           { icon: <FaCogs />,        label: 'Development & QA',      desc: 'Agile sprints with continuous testing, code reviews, and performance benchmarks.', color: 'bg-blue-600' },
           { icon: <FaLifeRing />,    label: 'Deployment & Support',  desc: 'CI/CD pipeline launch, monitoring setup, and round-the-clock post-launch support.', color: 'bg-cyan-600' },
         ]}
@@ -130,14 +130,14 @@ const SoftwareSolutions = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-purple-200 transition-all duration-300"
+                className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300"
               >
-                <div className="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl text-purple-600 mb-6">
+                <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-3xl text-blue-600 mb-6">
                     {service.icon}
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{service.title}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed mb-6">{service.desc}</p>
-                <div className="flex items-center gap-2 text-purple-700 text-sm font-bold">
+                <div className="flex items-center gap-2 text-blue-700 text-sm font-bold">
                     <FaCheckCircle /> Enterprise Grade
                 </div>
               </motion.div>
@@ -147,28 +147,28 @@ const SoftwareSolutions = () => {
 
       {/* === INDUSTRIES === */}
       <div className="bg-[#0f172a] py-20 mb-24 text-white relative overflow-hidden">
-         <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
          <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
 
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 <div>
-                    <span className="text-purple-400 font-bold tracking-widest uppercase text-sm">Industries</span>
+                    <span className="text-blue-400 font-bold tracking-widest uppercase text-sm">Industries</span>
                     <h2 className="text-4xl font-bold mt-2 mb-6">Software for Every Sector</h2>
                     <p className="text-gray-400 text-lg leading-relaxed mb-8">
                         Our technical expertise spans across various industries. We understand the unique challenges and compliance requirements of your sector.
                     </p>
                     <button
                       onClick={() => openWA_SS('Hello DVein Team, I would like to schedule a consultation for software development.')}
-                      className="text-purple-400 font-bold hover:underline flex items-center gap-2"
+                      className="text-blue-400 font-bold hover:underline flex items-center gap-2"
                     >
                       Schedule a Consultation <FaArrowRight />
                     </button>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     {industries.map((ind, i) => (
-                        <div key={i} className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-purple-500/50 hover:bg-white/10 transition-colors">
-                            <div className="text-3xl text-purple-400 mb-3">{ind.icon}</div>
+                        <div key={i} className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-blue-500/50 hover:bg-white/10 transition-colors">
+                            <div className="text-3xl text-blue-400 mb-3">{ind.icon}</div>
                             <h4 className="font-bold text-lg">{ind.name}</h4>
                             <p className="text-sm text-gray-400 mt-1">{ind.desc}</p>
                         </div>
@@ -209,7 +209,7 @@ const SoftwareSolutions = () => {
                         className="w-full flex justify-between items-center p-5 text-left font-bold text-gray-800 hover:bg-gray-50 transition-colors"
                       >
                           {faq.question}
-                          {activeAccordion === index ? <FaChevronUp className="text-purple-600"/> : <FaChevronDown className="text-gray-400"/>}
+                          {activeAccordion === index ? <FaChevronUp className="text-blue-600"/> : <FaChevronDown className="text-gray-400"/>}
                       </button>
                       <AnimatePresence>
                         {activeAccordion === index && (
@@ -234,7 +234,7 @@ const SoftwareSolutions = () => {
               
               {/* Dynamic Glow Background */}
               <div className="absolute top-0 left-0 w-full h-full bg-grid-white/[0.05]"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] group-hover:bg-purple-600/30 transition-all duration-700"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] group-hover:bg-blue-600/30 transition-all duration-700"></div>
               
               {/* Content */}
               <div className="relative z-10">

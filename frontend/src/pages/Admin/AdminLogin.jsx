@@ -35,7 +35,7 @@ const AdminLogin = () => {
         // Login Failed
         setError(data.message || "Invalid Admin Credentials");
       }
-    } catch (err) {
+    } catch {
         setError("Server Error. Ensure Backend is running.");
     } finally {
       setLoading(false);

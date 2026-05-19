@@ -44,18 +44,18 @@ const ProductsPage = () => {
   ];
 
   return (
-    <div className="font-sans text-slate-900 bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen pt-24 pb-16">
+    <div className="font-sans text-slate-900 bg-gradient-to-br from-blue-50 via-white to-blue-50 min-h-screen pt-24 pb-16">
 
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <span className="inline-block py-1.5 px-4 rounded-full bg-white text-indigo-600 font-semibold tracking-wide text-xs mb-6 border border-indigo-100 shadow-sm">
+          <span className="inline-block py-1.5 px-4 rounded-full bg-white text-blue-600 font-semibold tracking-wide text-xs mb-6 border border-blue-100 shadow-sm">
             Product Hub Node Activated
           </span>
 
           <h1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight mb-6 tracking-tight">
             Future-Proof <br/>
-            <span className="text-indigo-600">Product Disruptors</span>
+            <span className="text-blue-600">Product Disruptors</span>
           </h1>
 
           <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed mb-10 font-medium">
@@ -65,13 +65,13 @@ const ProductsPage = () => {
           <div className="flex flex-wrap justify-center gap-4">
             <button 
               onClick={() => document.getElementById('inventory').scrollIntoView({ behavior: 'smooth' })} 
-              className="bg-indigo-600 text-white px-10 py-4 rounded-xl font-semibold text-sm transition-all shadow-xl hover:bg-slate-900 hover:-translate-y-1"
+              className="bg-blue-600 text-white px-10 py-4 rounded-xl font-semibold text-sm transition-all shadow-xl hover:bg-slate-900 hover:-translate-y-1"
             >
               Explore Inventory
             </button>
 
             <button 
-              className="bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 px-10 py-4 rounded-xl font-semibold text-sm transition-all hover:border-indigo-400"
+              className="bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 px-10 py-4 rounded-xl font-semibold text-sm transition-all hover:border-blue-400"
             >
               Technical Docs
             </button>
@@ -84,7 +84,7 @@ const ProductsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {architecturalDNA.map((node, i) => (
             <motion.div key={i} whileHover={{ y: -5 }} className="bg-white/70 backdrop-blur-md p-10 rounded-[2.5rem] border border-white transition-all group hover:shadow-2xl text-center">
-              <div className="text-2xl text-indigo-600 mb-6 flex justify-center group-hover:scale-110 transition-transform">
+              <div className="text-2xl text-blue-600 mb-6 flex justify-center group-hover:scale-110 transition-transform">
                 {node.icon}
               </div>
               <h3 className="font-bold text-slate-900 text-base mb-3 tracking-tight">
@@ -105,7 +105,7 @@ const ProductsPage = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
               Deployment Lifecycle
             </h2>
-            <p className="text-indigo-600 mt-4 font-medium tracking-wide text-sm">
+            <p className="text-blue-600 mt-4 font-medium tracking-wide text-sm">
               Agile Activation Sync Nodes
             </p>
           </div>
@@ -114,7 +114,7 @@ const ProductsPage = () => {
             {RoadmapSteps.map((step, index) => (
               <div key={index}>
                 <div className="w-20 h-20 bg-white mx-auto rounded-[2rem] flex items-center justify-center border border-slate-100 shadow-sm mb-6">
-                  <span className="text-lg font-semibold text-indigo-600">
+                  <span className="text-lg font-semibold text-blue-600">
                     {step.id}
                   </span>
                 </div>
@@ -136,11 +136,11 @@ const ProductsPage = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2 tracking-tight">
             Active Inventory
           </h2>
-          <div className="w-20 h-1.5 bg-indigo-600 mx-auto rounded-full"></div>
+          <div className="w-20 h-1.5 bg-blue-600 mx-auto rounded-full"></div>
         </div>
 
         {loading ? (
-          <div className="text-center py-20 text-indigo-600 font-medium animate-pulse text-sm">
+          <div className="text-center py-20 text-blue-600 font-medium animate-pulse text-sm">
             Syncing Ledger...
           </div>
         ) : products.length > 0 ? (
@@ -159,15 +159,15 @@ const ProductsPage = () => {
                   {item.name}
                 </h3>
 
-                <p className="text-sm text-slate-600 font-medium leading-relaxed mb-6 border-l-4 border-indigo-100 pl-4">
+                <p className="text-sm text-slate-600 font-medium leading-relaxed mb-6 border-l-4 border-blue-100 pl-4">
                   {item.description}
                 </p>
 
-                <div className="bg-indigo-50 p-5 rounded-2xl mb-8 flex justify-between items-center border border-indigo-100">
-                  <span className="text-xs font-medium text-indigo-400">
+                <div className="bg-blue-50 p-5 rounded-2xl mb-8 flex justify-between items-center border border-blue-100">
+                  <span className="text-xs font-medium text-blue-400">
                     Monthly sync
                   </span>
-                  <span className="text-lg font-bold text-indigo-700">
+                  <span className="text-lg font-bold text-blue-700">
                     {item.price || "$299"}/mo
                   </span>
                 </div>
@@ -175,15 +175,15 @@ const ProductsPage = () => {
                 <div className="grid gap-3 mt-auto">
                   <button
                     onClick={() => openWA_Prod(`Hello DVein Team, I am interested in launching a trial for: ${item.name}`)}
-                    className="w-full py-3 bg-indigo-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:bg-slate-900 transition-all flex items-center justify-center gap-2"
+                    className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:bg-slate-900 transition-all flex items-center justify-center gap-2"
                   >
                     <FaPlayCircle className="text-base" /> Launch Trial
                   </button>
                   <button
                     onClick={() => openWA_Prod(`Hello DVein Team, I want member access for: ${item.name}`)}
-                    className="w-full py-3 bg-white text-slate-900 border border-slate-200 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm hover:border-indigo-400 transition-all"
+                    className="w-full py-3 bg-white text-slate-900 border border-slate-200 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm hover:border-blue-400 transition-all"
                   >
-                    <FaLock className="text-indigo-600" /> Member Access
+                    <FaLock className="text-blue-600" /> Member Access
                   </button>
                 </div>
               </motion.div>
@@ -191,7 +191,7 @@ const ProductsPage = () => {
           </div>
         ) : (
           <div className="max-w-4xl mx-auto bg-white p-16 rounded-[3rem] border border-slate-100 text-center shadow-xl">
-            <FaRocket className="text-4xl text-indigo-600 mx-auto mb-6" />
+            <FaRocket className="text-4xl text-blue-600 mx-auto mb-6" />
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 tracking-tight">
               Launch Node Initializing
             </h2>
@@ -206,7 +206,7 @@ const ProductsPage = () => {
       <section className="py-32 bg-white/40 border-y border-white backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm mb-6 border border-indigo-50">
+            <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm mb-6 border border-blue-50">
               <FaGoogle className="text-red-500 text-lg" />
               <span className="font-medium text-slate-700 text-sm">
                 Rated 5.0 Google Reviews
@@ -220,7 +220,7 @@ const ProductsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {reviews.map((review) => (
               <motion.div key={review.id} whileHover={{ y: -5 }} className="bg-white p-12 rounded-[2.5rem] border border-slate-100 shadow-sm transition-all relative flex flex-col hover:shadow-2xl">
-                <FaQuoteLeft className="text-indigo-400/10 text-6xl absolute top-8 right-10" />
+                <FaQuoteLeft className="text-blue-400/10 text-6xl absolute top-8 right-10" />
                 <div className="flex gap-1 text-yellow-400 mb-8">
                   {[...Array(review.rating)].map((_, i) => <FaStar key={i} />)}
                 </div>
@@ -235,7 +235,7 @@ const ProductsPage = () => {
                     <h4 className="font-bold text-slate-900 text-sm">
                       {review.name}
                     </h4>
-                    <p className="text-xs text-indigo-400 font-medium tracking-wide">
+                    <p className="text-xs text-blue-400 font-medium tracking-wide">
                       {review.role}
                     </p>
                   </div>
@@ -264,7 +264,7 @@ const ProductsPage = () => {
               >
                 <span className="text-sm">{faq.q}</span>
                 {activeAccordion === index 
-                  ? <FaChevronUp className="text-indigo-600"/> 
+                  ? <FaChevronUp className="text-blue-600"/> 
                   : <FaChevronDown className="text-slate-300"/>}
               </button>
 
@@ -274,7 +274,7 @@ const ProductsPage = () => {
                     initial={{ height: 0, opacity: 0 }} 
                     animate={{ height: "auto", opacity: 1 }} 
                     exit={{ height: 0, opacity: 0 }} 
-                    className="bg-slate-50 px-8 pb-8 text-sm text-slate-600 font-medium leading-relaxed border-l-4 border-indigo-600 ml-6"
+                    className="bg-slate-50 px-8 pb-8 text-sm text-slate-600 font-medium leading-relaxed border-l-4 border-blue-600 ml-6"
                   >
                     {faq.a}
                   </motion.div>
@@ -289,7 +289,7 @@ const ProductsPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-24">
         <button
           onClick={() => openWA_Prod('Hello DVein Team, I want to request a custom node activation for your product.')}
-          className="bg-slate-900 text-white px-10 py-5 rounded-xl font-semibold text-sm transition-all shadow-2xl hover:bg-indigo-600 hover:-translate-y-1"
+          className="bg-slate-900 text-white px-10 py-5 rounded-xl font-semibold text-sm transition-all shadow-2xl hover:bg-blue-600 hover:-translate-y-1"
         >
           Request Custom Node Activation <FaArrowRight className="inline ml-3" />
         </button>

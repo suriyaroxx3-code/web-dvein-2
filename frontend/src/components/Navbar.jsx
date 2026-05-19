@@ -43,7 +43,7 @@ const Navbar = () => {
       } else {
         setAdminError(data.message || 'Invalid credentials');
       }
-    } catch (err) {
+    } catch {
       setAdminError('Server unavailable. Ensure backend is running.');
     } finally {
       setAdminLoading(false);

@@ -28,8 +28,8 @@ const features = [
     name: 'Affordable Solutions', 
     desc: 'Top-tier tech solutions and education at accessible price points.',
     icon: FaHandHoldingUsd, 
-    color: 'text-purple-600', 
-    bg: 'bg-purple-50' 
+    color: 'text-blue-600', 
+    bg: 'bg-blue-50' 
   },
 ];
 
