@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// Link removed — all CTAs now go to WhatsApp
-const WA_PROD = '919500181230';
-const openWA_Prod = (msg) =>
-  window.open(`https://wa.me/${WA_PROD}?text=${encodeURIComponent(msg)}`, '_blank');
-import { 
-  FaRocket, FaShieldAlt, FaSync, FaBolt, FaDatabase, 
-  FaNetworkWired, FaCogs, FaArrowRight, FaPlayCircle, 
+import {
+  FaRocket, FaShieldAlt, FaSync, FaBolt, FaDatabase,
+  FaNetworkWired, FaCogs, FaArrowRight, FaPlayCircle,
   FaLock, FaChevronDown, FaChevronUp, FaMicrochip,
   FaQuoteLeft, FaStar, FaGoogle
 } from 'react-icons/fa';
+
+// All CTAs go to WhatsApp
+const WA_PROD = '919500181230';
+const openWA_Prod = (msg) =>
+  window.open(`https://wa.me/${WA_PROD}?text=${encodeURIComponent(msg)}`, '_blank');
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);

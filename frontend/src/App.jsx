@@ -15,10 +15,12 @@ import CoursesPage from './pages/CoursesPage';
 import StudentProjects from './pages/StudentProjects';
 import Collaborations from './pages/Collaborations';
 import OurStory from './pages/OurStory';
+import Privacy from './pages/Privacy';
 
 // USER AUTH
 import Login from './pages/Login';
 import Register from './pages/Register';
+import UserDashboard from './pages/UserDashboard';
 
 // ADMIN AUTH (NEW ADDITION) - Path pathukonga
 import AdminLogin from './pages/Admin/AdminLogin';
@@ -58,10 +60,12 @@ const Layout = () => {
         <Route path="/student-projects" element={<StudentProjects />} />
         <Route path="/collaboration" element={<Collaborations />} />
         <Route path="/our-story" element={<OurStory />} />
+        <Route path="/privacy" element={<Privacy />} />
 
         {/* USER AUTH ROUTES */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
 
         {/* ADMIN ROUTES (NEW) */}
         <Route path="/admin/login" element={<AdminLogin />} />
