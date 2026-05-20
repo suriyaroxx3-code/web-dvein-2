@@ -93,6 +93,14 @@ const ProductsPage = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const inventoryCardTimer = setInterval(() => {
+      setActiveInventoryCard((currentIndex) => (currentIndex + 1) % 3);
+    }, 10000);
+
+    return () => clearInterval(inventoryCardTimer);
+  }, []);
+
   const inventoryCards = [
     { ...hrmProduct, imageIndex: hrmImageIndex },
     { ...compackProduct, imageIndex: compackImageIndex },
