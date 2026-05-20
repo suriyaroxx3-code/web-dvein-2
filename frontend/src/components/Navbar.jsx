@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenuAlt3, HiX, HiChevronDown } from 'react-icons/hi';
-import { FaChevronRight, FaUserShield, FaTimes } from 'react-icons/fa';
+import { FaChevronRight } from 'react-icons/fa';
 import logo from '../assets/logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [mobileServiceOpen, setMobileServiceOpen] = useState(false);
   const [desktopServiceOpen, setDesktopServiceOpen] = useState(false);
-  const [showAdminModal, setShowAdminModal] = useState(false);
-  const [adminCreds, setAdminCreds] = useState({ username: '', password: '' });
-  const [adminLoading, setAdminLoading] = useState(false);
-  const [adminError, setAdminError] = useState('');
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     setIsOpen(false);
@@ -23,8 +18,8 @@ const Navbar = () => {
   }, [location]);
 
   useEffect(() => {
-    document.body.style.overflow = (isOpen || showAdminModal) ? 'hidden' : 'unset';
-  }, [isOpen, showAdminModal]);
+    document.body.style.overflow = isOpen ? 'hidden' : 'unset';
+  }, [isOpen]);
 
   useEffect(() => {
     if (!desktopServiceOpen) return;
@@ -36,32 +31,6 @@ const Navbar = () => {
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [desktopServiceOpen]);
-
-  const handleAdminLogin = async (e) => {
-    e.preventDefault();
-    setAdminLoading(true);
-    setAdminError('');
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(adminCreds)
-      });
-      const data = await response.json();
-      if (data.success) {
-        localStorage.setItem('adminToken', data.token);
-        localStorage.setItem('isAdmin', 'true');
-        setShowAdminModal(false);
-        navigate('/admin-dashboard');
-      } else {
-        setAdminError(data.message || 'Invalid credentials');
-      }
-    } catch (err) {
-      setAdminError('Server unavailable. Ensure backend is running.');
-    } finally {
-      setAdminLoading(false);
-    }
-  };
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -92,14 +61,10 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
 
-            {/* Logo — click opens hidden Admin Login */}
-            <div
-              className="flex-shrink-0 cursor-pointer z-[70]"
-              onClick={() => { setShowAdminModal(true); setAdminError(''); setAdminCreds({ username: '', password: '' }); }}
-              title=""
-            >
+            {/* Logo */}
+            <Link to="/" className="flex-shrink-0 z-[70]">
               <img src={logo} alt="DVein" className="h-10 md:h-12 w-auto object-contain" />
-            </div>
+            </Link>
 
             {/* Desktop Menu */}
             <div className="hidden lg:flex items-center gap-3 font-sans">
@@ -208,79 +173,6 @@ const Navbar = () => {
 
             </motion.div>
           </div>
-        )}
-      </AnimatePresence>
-
-      {/* HIDDEN ADMIN LOGIN MODAL */}
-      <AnimatePresence>
-        {showAdminModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
-            onClick={(e) => { if (e.target === e.currentTarget) setShowAdminModal(false); }}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 relative"
-            >
-              <button
-                onClick={() => setShowAdminModal(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition"
-              >
-                <FaTimes size={18} />
-              </button>
-
-              <div className="text-center mb-6">
-                <div className="w-14 h-14 bg-dveinBlue rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl shadow-lg">
-                  <FaUserShield />
-                </div>
-                <h2 className="text-xl font-black text-gray-800">Admin Portal</h2>
-                <p className="text-xs text-gray-400 mt-1">Authorized access only</p>
-              </div>
-
-              <form onSubmit={handleAdminLogin} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Username</label>
-                  <input
-                    type="text"
-                    required
-                    value={adminCreds.username}
-                    onChange={e => setAdminCreds({ ...adminCreds, username: e.target.value })}
-                    className="w-full border border-gray-200 bg-gray-50 p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-dveinBlue/20 focus:border-dveinBlue transition"
-                    placeholder="admin"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Password</label>
-                  <input
-                    type="password"
-                    required
-                    value={adminCreds.password}
-                    onChange={e => setAdminCreds({ ...adminCreds, password: e.target.value })}
-                    className="w-full border border-gray-200 bg-gray-50 p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-dveinBlue/20 focus:border-dveinBlue transition"
-                    placeholder="••••••"
-                  />
-                </div>
-
-                {adminError && (
-                  <p className="text-red-500 text-xs font-semibold text-center bg-red-50 py-2 px-3 rounded-lg">{adminError}</p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={adminLoading}
-                  className="w-full bg-dveinBlue text-white py-3 rounded-xl font-bold text-sm hover:opacity-90 transition disabled:opacity-50"
-                >
-                  {adminLoading ? 'Verifying...' : 'Access Dashboard'}
-                </button>
-              </form>
-            </motion.div>
-          </motion.div>
         )}
       </AnimatePresence>
     </>
