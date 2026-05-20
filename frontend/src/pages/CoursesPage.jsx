@@ -10,6 +10,29 @@ import {
 import AnimatedRoadmap from '../components/AnimatedRoadmap';
 import '../styles/software-solutions.css';
 
+const staticCourses = [
+  { _id: 'sc1',  title: 'Full Stack Java',                tag: 'DEV',      icon: <FaLaptopCode />,    color: 'from-blue-600 to-blue-800',    description: 'Master enterprise-grade Java development with Spring Boot, REST APIs, and scalable backend architecture.' },
+  { _id: 'sc2',  title: 'Full Stack Python',              tag: 'DEV',      icon: <FaLaptopCode />,    color: 'from-green-600 to-emerald-800', description: 'Build end-to-end Python applications with Django, Flask, and modern frontend integration.' },
+  { _id: 'sc3',  title: 'Data Science and AI',            tag: 'AI',       icon: <FaBrain />,         color: 'from-purple-600 to-purple-900', description: 'Explore data pipelines, statistical modeling, and AI-driven applications using Python and real datasets.' },
+  { _id: 'sc4',  title: 'AI & Machine Learning',          tag: 'AI',       icon: <FaBrain />,         color: 'from-indigo-600 to-indigo-900', description: 'Deep dive into supervised, unsupervised, and reinforcement learning models for production deployments.' },
+  { _id: 'sc5',  title: 'Data Analytics',                 tag: 'DATA',     icon: <FaChartLine />,     color: 'from-teal-500 to-teal-800',    description: 'Transform raw data into actionable insights with advanced analytics tools and visualization techniques.' },
+  { _id: 'sc6',  title: 'Business Analytics',             tag: 'BIZ',      icon: <FaChartLine />,     color: 'from-orange-500 to-orange-800', description: 'Drive strategic decisions through data-driven business modeling, KPIs, and BI dashboards.' },
+  { _id: 'sc7',  title: 'DevOps',                         tag: 'OPS',      icon: <FaCogs />,          color: 'from-slate-600 to-slate-900',  description: 'CI/CD pipelines, containerization, and infrastructure automation for modern software delivery.' },
+  { _id: 'sc8',  title: 'Cloud Computing',                tag: 'CLOUD',    icon: <FaCloudUploadAlt />,color: 'from-sky-500 to-sky-800',      description: 'Deploy, scale, and manage applications on AWS, Azure, and GCP with cloud-native best practices.' },
+  { _id: 'sc9',  title: 'MERN Stack',                     tag: 'DEV',      icon: <FaLayerGroup />,    color: 'from-blue-500 to-cyan-700',    description: 'Build full-stack web apps with MongoDB, Express, React, and Node.js in a cohesive workflow.' },
+  { _id: 'sc10', title: 'UI/UX Design and Prototyping',   tag: 'DESIGN',   icon: <FaDraftingCompass />,color: 'from-pink-500 to-rose-700',   description: 'Design intuitive user interfaces and interactive prototypes using Figma and design system principles.' },
+  { _id: 'sc11', title: 'Web Development',                tag: 'DEV',      icon: <FaGlobe />,         color: 'from-blue-500 to-blue-800',    description: 'Core and advanced web development covering HTML, CSS, JavaScript, and modern frameworks.' },
+  { _id: 'sc12', title: 'IOT',                            tag: 'HARDWARE', icon: <FaMicrochip />,     color: 'from-green-500 to-green-800',  description: 'Connect physical devices to the internet with sensor integration, protocols, and cloud IoT platforms.' },
+  { _id: 'sc13', title: 'Embedded Systems',               tag: 'HARDWARE', icon: <FaMicrochip />,     color: 'from-amber-500 to-amber-800',  description: 'Program microcontrollers, real-time systems, and low-level hardware interfaces for embedded applications.' },
+  { _id: 'sc14', title: 'Cybersecurity',                  tag: 'SECURITY', icon: <FaShieldAlt />,     color: 'from-red-600 to-red-900',      description: 'Ethical hacking, threat analysis, and secure system design following OWASP and industry standards.' },
+  { _id: 'sc15', title: 'Big Data Analytics',             tag: 'DATA',     icon: <FaNetworkWired />,  color: 'from-violet-600 to-violet-900',description: 'Process and analyze massive datasets using Hadoop, Spark, and distributed computing frameworks.' },
+  { _id: 'sc16', title: 'HR - Operations',                tag: 'HR',       icon: <FaUsers />,         color: 'from-slate-500 to-slate-800',  description: 'Streamline HR workflows, talent acquisition, and workforce management with modern HR tools.' },
+  { _id: 'sc17', title: 'HR - Marketing',                 tag: 'HR',       icon: <FaUsers />,         color: 'from-rose-500 to-rose-800',    description: 'Employer branding, talent marketing strategies, and HR communication for modern organizations.' },
+  { _id: 'sc18', title: 'HR - Finance & Accounting',      tag: 'HR',       icon: <FaUsers />,         color: 'from-emerald-600 to-emerald-900',description: 'Payroll management, financial reporting, and accounting fundamentals for HR professionals.' },
+  { _id: 'sc19', title: 'Digital Marketing',              tag: 'MARKETING',icon: <FaRocket />,        color: 'from-orange-500 to-amber-700', description: 'SEO, social media strategy, paid advertising, and analytics for impactful digital campaigns.' },
+  { _id: 'sc20', title: 'Software Testing',               tag: 'QA',       icon: <FaCheckCircle />,   color: 'from-cyan-600 to-cyan-900',    description: 'Manual and automated testing, test case design, and QA methodologies for production software.' },
+];
+
 const AcademyPage = () => {
   const [trainings, setTrainings] = useState([]);
   const [activeAccordion, setActiveAccordion] = useState(null);

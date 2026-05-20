@@ -17,19 +17,36 @@ const marqueeStyle = `
 
 const STATIC_DATA = {
   domains: [
-    { _id: 1, title: "Full Stack Mafia",   iconName: "FaLayerGroup", color: "text-blue-600",   desc: "Dominate the web. MERN Stack, Next.js, and System Design.",           skills: ["React", "Node.js", "MongoDB", "AWS"] },
-    { _id: 2, title: "AI Architects",       iconName: "FaBrain",      color: "text-blue-600", desc: "Build the brain. Python, TensorFlow, LLMs, and Neural Networks.",     skills: ["Python", "PyTorch", "OpenAI API", "HuggingFace"] },
-    { _id: 3, title: "Cloud Commanders",    iconName: "FaCloud",      color: "text-blue-600", desc: "Scale to infinity. Docker, Kubernetes, Terraform, and CI/CD.",        skills: ["AWS", "Docker", "K8s", "Linux"] },
+    { _id: 1,  title: "Full Stack Java",               iconName: "FaCode",            color: "text-blue-600",    desc: "Build enterprise-grade applications with Java, Spring Boot, REST APIs, and scalable backend systems.",      skills: ["Java", "Spring Boot", "REST API", "MySQL"] },
+    { _id: 2,  title: "Full Stack Python",              iconName: "FaCode",            color: "text-green-600",   desc: "End-to-end Python development using Django, FastAPI, and modern frontend integration.",                   skills: ["Python", "Django", "FastAPI", "PostgreSQL"] },
+    { _id: 3,  title: "Data Science and AI",            iconName: "FaBrain",           color: "text-purple-600",  desc: "Explore data pipelines, statistical modelling, and AI-driven applications using Python and real datasets.", skills: ["Python", "Pandas", "Statistics", "Visualization"] },
+    { _id: 4,  title: "AI & Machine Learning",          iconName: "FaRobot",           color: "text-indigo-600",  desc: "Supervised, unsupervised, and deep learning models built for real production deployments.",                skills: ["TensorFlow", "PyTorch", "Scikit-learn", "LLMs"] },
+    { _id: 5,  title: "Data Analytics",                 iconName: "FaChartBar",        color: "text-teal-600",    desc: "Transform raw data into actionable insights using SQL, Excel, Power BI, and Tableau.",                   skills: ["SQL", "Excel", "Power BI", "Tableau"] },
+    { _id: 6,  title: "Business Analytics",             iconName: "FaChartLine",       color: "text-orange-600",  desc: "Drive strategic decisions through data-driven business modelling, KPIs, and BI dashboards.",             skills: ["Strategy", "BI Tools", "KPIs", "Reporting"] },
+    { _id: 7,  title: "DevOps",                         iconName: "FaCogs",            color: "text-slate-600",   desc: "CI/CD pipelines, containerisation, and infrastructure automation for modern software delivery.",         skills: ["Docker", "CI/CD", "Kubernetes", "Jenkins"] },
+    { _id: 8,  title: "Cloud Computing",                iconName: "FaCloud",           color: "text-sky-600",     desc: "Deploy, scale, and manage applications on AWS, Azure, and GCP with cloud-native best practices.",        skills: ["AWS", "Azure", "GCP", "Terraform"] },
+    { _id: 9,  title: "MERN Stack",                     iconName: "FaLayerGroup",      color: "text-blue-500",    desc: "Full-stack web apps with MongoDB, Express, React, and Node.js in a cohesive modern workflow.",           skills: ["MongoDB", "Express", "React", "Node.js"] },
+    { _id: 10, title: "UI/UX Design and Prototyping",   iconName: "FaDraftingCompass", color: "text-pink-600",    desc: "Design intuitive user interfaces and interactive prototypes using Figma and design system principles.",    skills: ["Figma", "Prototyping", "Wireframes", "User Research"] },
+    { _id: 11, title: "Web Development",                iconName: "FaGlobe",           color: "text-blue-600",    desc: "Core and advanced web development covering HTML, CSS, JavaScript, and modern frameworks.",               skills: ["HTML/CSS", "JavaScript", "React", "Responsive"] },
+    { _id: 12, title: "IOT",                            iconName: "FaMicrochip",       color: "text-green-600",   desc: "Connect physical devices to the internet with sensor integration, protocols, and cloud IoT platforms.",   skills: ["Arduino", "MQTT", "Sensors", "Cloud IoT"] },
+    { _id: 13, title: "Embedded Systems",               iconName: "FaMemory",          color: "text-amber-600",   desc: "Program microcontrollers, real-time systems, and low-level hardware interfaces for embedded applications.", skills: ["C/C++", "Microcontrollers", "RTOS", "PCB"] },
+    { _id: 14, title: "Cybersecurity",                  iconName: "FaShieldAlt",       color: "text-red-600",     desc: "Ethical hacking, threat analysis, and secure system design following OWASP and industry standards.",      skills: ["Ethical Hacking", "OWASP", "Pen Testing", "SIEM"] },
+    { _id: 15, title: "Big Data Analytics",             iconName: "FaDatabase",        color: "text-violet-600",  desc: "Process and analyse massive datasets using Hadoop, Spark, and distributed computing frameworks.",         skills: ["Hadoop", "Spark", "Hive", "Kafka"] },
+    { _id: 16, title: "HR - Operations",                iconName: "FaUserTie",         color: "text-slate-600",   desc: "Streamline HR workflows, talent acquisition, and workforce management with modern HR tools.",            skills: ["Talent Acquisition", "HRMS", "Onboarding", "Compliance"] },
+    { _id: 17, title: "HR - Marketing",                 iconName: "FaBullhorn",        color: "text-rose-600",    desc: "Employer branding, talent marketing strategies, and HR communication for modern organisations.",         skills: ["Employer Branding", "Recruitment Mktg", "LinkedIn", "Analytics"] },
+    { _id: 18, title: "HR - Finance & Accounting",      iconName: "FaMoneyBillWave",   color: "text-emerald-600", desc: "Payroll management, financial reporting, and accounting fundamentals for HR professionals.",            skills: ["Payroll", "Tally", "Budgeting", "Compliance"] },
+    { _id: 19, title: "Digital Marketing",              iconName: "FaBullseye",        color: "text-orange-500",  desc: "SEO, paid advertising, social media strategy, and analytics for impactful digital campaigns.",          skills: ["SEO", "Google Ads", "Social Media", "Analytics"] },
+    { _id: 20, title: "Software Testing",               iconName: "FaBug",             color: "text-cyan-600",    desc: "Manual and automated testing, test case design, and QA methodologies for production-grade software.",   skills: ["Manual Testing", "Selenium", "Jest", "Test Plans"] },
   ],
   curriculum: {
     web: [
-      { _id: 1, week: "Week 1-2", title: "The Foundation",        desc: "Javascript V8 Engine internals, Async architecture, and DOM manipulation." },
-      { _id: 2, week: "Week 3-5", title: "Backend Engineering",   desc: "Building scalable APIs with Node.js, Express, and Database Design patterns." },
-      { _id: 3, week: "Week 6-8", title: "Frontend & Deployment", desc: "Advanced React hooks, Redux, Next.js SSR, and deploying to AWS EC2." },
+      { _id: 1, week: "Week 1-2", title: "HTML,CSS",        desc: "Javascript V8 Engine internals, Async architecture, and DOM manipulation." },
+      { _id: 2, week: "Week 3-5", title: "JAVASCRIPT",   desc: "Building scalable APIs with Node.js, Express, and Database Design patterns." },
+      { _id: 3, week: "Week 6-8", title: "BOOTSTRAP", desc: "Advanced React hooks, Redux, Next.js SSR, and deploying to AWS EC2." },
     ],
     ai: [
-      { _id: 1, week: "Week 1-2", title: "Python & Maths",        desc: "Advanced Python structures, NumPy, Pandas, and Linear Algebra for ML." },
-      { _id: 2, week: "Week 3-5", title: "Machine Learning Ops",  desc: "Supervised Learning, Scikit-learn, and model evaluation metrics." },
+      { _id: 1, week: "Week 1-2", title: "Python & Statistics",        desc: "Advanced Python structures, NumPy, Pandas, and Linear Algebra for ML." },
+      { _id: 2, week: "Week 3-5", title: "Machine Learning",  desc: "Supervised Learning, Scikit-learn, and model evaluation metrics." },
       { _id: 3, week: "Week 6-8", title: "Deep Learning & LLMs",  desc: "Neural Networks, Transformers, and building RAG applications." },
     ],
   },
@@ -40,8 +57,8 @@ const STATIC_DATA = {
   ],
   faqs: [
     { _id: 1, question: "Is this beginner friendly?",        answer: "Yes, but be ready to work hard. We start from zero but move fast." },
-    { _id: 2, question: "Do you provide placement support?", answer: "We have 50+ hiring partners. If you clear our assessments, we refer you directly." },
-    { _id: 3, question: "What is the duration?",             answer: "The internship cohort runs for 8 weeks intense training + 4 weeks live project." },
+    { _id: 2, question: "Do you provide placement support?", answer: "We have 20+ hiring partners. If you clear our assessments, we refer you directly." },
+    { _id: 3, question: "What is the duration?",             answer: "The internship class runs for 1 Month to 3 Months." },
   ],
 };
 
@@ -51,7 +68,7 @@ const Training = () => {
   const [data, setData] = useState(STATIC_DATA);
 
   const [formData, setFormData] = useState({
-    firstName: '', lastName: '', email: '', phone: '', portfolio: '', jobTitle: 'Internship Cohort 2026'
+    firstName: '', lastName: '', email: '', phone: '', portfolio: '', jobTitle: ''
   });
   const [resume, setResume] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -79,7 +96,7 @@ const Training = () => {
       `*Name:* ${formData.firstName} ${formData.lastName}`,
       `*Email:* ${formData.email}`,
       `*Phone:* ${formData.phone}`,
-      `*Applying For:* ${formData.jobTitle}`,
+      `*Applying For internship:* ${formData.jobTitle}`,
       `*Portfolio:* ${formData.portfolio || 'Not provided'}`,
       ``,
       `_Sent from DVein Website_`,
@@ -101,7 +118,7 @@ const Training = () => {
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`, '_blank');
 
     setSubmitStatus('success');
-    setFormData({ firstName: '', lastName: '', email: '', phone: '', portfolio: '', jobTitle: 'Internship Cohort 2026' });
+    setFormData({ firstName: '', lastName: '', email: '', phone: '', portfolio: '', jobTitle: '' });
     setResume(null);
     e.target.reset();
     setSubmitting(false);
@@ -115,14 +132,13 @@ const Training = () => {
       <div className="relative min-h-[70vh] flex flex-col justify-center pb-12 overflow-hidden px-6">
         <div className="max-w-7xl mx-auto text-center z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <span className="inline-block py-1 px-3 rounded-full bg-white border border-blue-100 text-blue-600 text-xs font-bold tracking-wider mb-4 shadow-sm uppercase">Engineering Excellence</span>
+            <span className="inline-block py-1 px-3 rounded-full bg-white border border-blue-100 text-blue-600 text-xs font-bold tracking-wider mb-4 shadow-sm uppercase"></span>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-gray-900">
               Stop Learning Syntax. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-600 to-blue-600">Start Building Products.</span>
+              <span className="text-black">Start Building Projects.</span>
             </h1>
             <p className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-              Join an elite program designed by Senior Engineers. Master industry-standard tech through intense execution and real-world deployment.
-            </p>
+              Join the internship program designed by IT Professionals. Mastering the tech through intense execution and real-world deployment.            </p>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
               <button
                 onClick={() => document.getElementById('apply-section').scrollIntoView({ behavior: 'smooth' })}
@@ -138,11 +154,11 @@ const Training = () => {
       </div>
 
       {/* MARQUEE */}
-      <div className="bg-white/50 backdrop-blur-sm py-8 border-y border-white rotate-[-1deg] scale-[1.01] z-20 relative">
+      <div className="bg-white/50 backdrop-blur-sm py-8 border-y border-white z-20 relative overflow-hidden">
         <div className="animate-marquee inline-block whitespace-nowrap">
           {[1,2,3].map(i => (
             <span key={i} className="mx-10 text-gray-900 font-black text-xl uppercase tracking-tighter">
-              500+ Graduates &bull; 100+ Projects &bull; 50+ Partners &bull;
+              200+ Students &bull; 100+ Projects &bull; 20+ Courses &bull;
             </span>
           ))}
         </div>
@@ -152,12 +168,12 @@ const Training = () => {
       <div id="domains" className="py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-gray-900">Choose Your Battlefield</h2>
-            <p className="text-gray-500 font-medium">Focused tracks built for high-performance careers.</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-gray-900">Choose Your Internships</h2>
+            <p className="text-gray-500 font-medium">Great courses built for high-performance careers.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {data.domains?.map((domain, index) => (
-              <motion.div key={domain._id} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="bg-white/70 backdrop-blur-md border border-white/50 rounded-[2rem] p-8 hover:shadow-xl transition-all group">
+              <motion.div key={domain._id} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: (index % 4) * 0.08 }} className="bg-white/70 backdrop-blur-md border border-white/50 rounded-[1.5rem] p-6 hover:shadow-xl transition-all group">
                 <div className={`w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl ${domain.color} mb-6 group-hover:scale-110 transition-transform`}>{getIcon(domain.iconName)}</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{domain.title}</h3>
                 <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">{domain.desc}</p>
@@ -286,17 +302,34 @@ const Training = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Applying For *</label>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Applying For internship *</label>
                 <select
                   required
                   value={formData.jobTitle}
                   onChange={e => setFormData(p => ({ ...p, jobTitle: e.target.value }))}
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all text-sm text-gray-700"
                 >
-                  <option value="Internship Cohort 2026">Internship Cohort 2026</option>
-                  <option value="Full Stack Mafia Track">Full Stack Mafia Track</option>
-                  <option value="AI Architects Track">AI Architects Track</option>
-                  <option value="Cloud Commanders Track">Cloud Commanders Track</option>
+                  <option value="">-- Select a track --</option>
+                  <option value="Full Stack Java">Full Stack Java</option>
+                  <option value="Full Stack Python">Full Stack Python</option>
+                  <option value="Data Science and AI">Data Science and AI</option>
+                  <option value="AI & Machine Learning">AI &amp; Machine Learning</option>
+                  <option value="Data Analytics">Data Analytics</option>
+                  <option value="Business Analytics">Business Analytics</option>
+                  <option value="DevOps">DevOps</option>
+                  <option value="Cloud Computing">Cloud Computing</option>
+                  <option value="MERN Stack">MERN Stack</option>
+                  <option value="UI/UX Design and Prototyping">UI/UX Design and Prototyping</option>
+                  <option value="Web Development">Web Development</option>
+                  <option value="IOT">IOT</option>
+                  <option value="Embedded Systems">Embedded Systems</option>
+                  <option value="Cybersecurity">Cybersecurity</option>
+                  <option value="Big Data Analytics">Big Data Analytics</option>
+                  <option value="HR - Operations">HR - Operations</option>
+                  <option value="HR - Marketing">HR - Marketing</option>
+                  <option value="HR - Finance & Accounting">HR - Finance &amp; Accounting</option>
+                  <option value="Digital Marketing">Digital Marketing</option>
+                  <option value="Software Testing">Software Testing</option>
                 </select>
               </div>
 
@@ -344,7 +377,7 @@ const Training = () => {
               </button>
 
               <p className="text-center text-xs text-gray-400">
-                WhatsApp will open with your details pre-filled. Just tap Send to complete.
+                WhatsApp will open with your details pre-filled. Just tap Submit to complete.
               </p>
             </form>
           )}
