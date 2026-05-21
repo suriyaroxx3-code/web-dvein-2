@@ -159,9 +159,24 @@ const Training = () => {
       <div className="relative min-h-[70vh] flex flex-col justify-center pb-12 overflow-hidden px-6">
         <div className="max-w-7xl mx-auto text-center z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-6 leading-tight text-gray-900 text-center" style={{ textTransform: 'none' }}>
-              internships
+            <span className="inline-block py-1 px-3 rounded-full bg-white border border-blue-100 text-blue-600 text-xs font-bold tracking-wider mb-4 shadow-sm uppercase">{cms?.hero?.badge || 'Internships'}</span>
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-gray-900">
+              Stop Learning Syntax <br />
+              <span className="text-black">Start Building Projects</span>
             </h1>
+            <p className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+              {cms?.hero?.description || 'Join the internship program designed by IT Professionals. Mastering the tech through intense execution and real-world deployment.'}
+            </p>
+            <div className="flex flex-col md:flex-row gap-4 justify-center">
+              <button
+                onClick={() => document.getElementById('apply-section').scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-3.5 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-all"
+              >Apply Now</button>
+              <button
+                onClick={() => document.getElementById('domains').scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-3.5 bg-white text-gray-800 border border-gray-200 rounded-xl font-bold shadow-sm hover:bg-gray-50 transition-all"
+              >Explore Tracks</button>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -395,3 +410,4 @@ const Training = () => {
 };
 
 export default Training;
+                                                                                                                                                     
