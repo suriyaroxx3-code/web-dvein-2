@@ -266,4 +266,4 @@ const Collaborations = () => {
   );
 };
 
-export default Collabora
+export default Collaborations;

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaRocket, FaShieldAlt, FaSync, FaBolt, FaDatabase,
-  FaNetworkWired, FaCogs, FaArrowRight,
-  FaLock, FaChevronDown, FaChevronUp,
-  FaQuoteLeft, FaStar, FaGoogle, FaLayerGroup, FaGlobe
+  FaNetworkWired, FaCogs, FaArrowRight, FaPlayCircle,
+  FaLock, FaChevronDown, FaChevronUp, FaMicrochip,
+  FaQuoteLeft, FaStar, FaGoogle, FaSearch, FaLayerGroup, FaGlobe
 } from 'react-icons/fa';
 import AnimatedRoadmap from '../components/AnimatedRoadmap';
 import '../styles/products.css';
@@ -30,6 +30,7 @@ import ecommerce2 from '../assets/E2.png';
 import ecommerce3 from '../assets/E3.png';
 import ecommerce4 from '../assets/E4.png';
 
+// All CTAs go to WhatsApp
 const WA_PROD = '919500181230';
 const openWA_Prod = (msg) =>
   window.open(`https://wa.me/${WA_PROD}?text=${encodeURIComponent(msg)}`, '_blank');
@@ -59,11 +60,8 @@ const ecommerceProduct = {
 };
 
 const ProductsPage = () => {
-  const { content } = useContent();
-  const p = content.products;
-
-  const [products, setProducts]             = useState([]);
-  const [loading, setLoading]               = useState(true);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [compackImageIndex, setCompackImageIndex] = useState(0);
   const [hrmImageIndex, setHrmImageIndex] = useState(0);
@@ -74,7 +72,7 @@ const ProductsPage = () => {
     fetch('http://localhost:5000/api/public/products')
       .then(res => res.json())
       .then(data => { setProducts(data); setLoading(false); })
-      .catch(() => { setLoading(false); });
+      .catch(err => { console.error(err); setLoading(false); });
   }, []);
 
   useEffect(() => {
@@ -141,7 +139,7 @@ const ProductsPage = () => {
   ];
 
   return (
-    <div className="products-page min-h-screen bg-[#020817] text-white font-sans">
+    <div className="font-sans text-slate-900 bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen pt-24 pb-16">
 
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24 text-center">
@@ -362,130 +360,91 @@ const ProductsPage = () => {
                 Rated 5.0 Google Reviews
               </span>
             </div>
-          </motion.div>
-        </div>
-      </section>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
+              Loved by Global Partners
+            </h2>
+          </div>
 
-      {/* ── DNA / CORE ARCHITECTURE ── */}
-      <section className="py-24 border-y border-white/5">
-        <div className="max-w-6xl mx-auto px-6">
-          <p className="text-center text-xs font-black text-white/30 uppercase tracking-[0.4em] mb-12">{p.dna.heading}</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {p.dna.items.map((item, i) => (
-              <motion.div key={i} whileHover={{ y: -8 }}
-                className="border border-white/10 rounded-2xl p-8 bg-white/2 hover:bg-white/5 transition-all group">
-                <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white/40 mb-6 group-hover:bg-dveinBlue group-hover:text-white transition-all">
-                  {i === 0 ? <FaBolt /> : i === 1 ? <FaLock /> : <FaDatabase />}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {reviews.map((review) => (
+              <motion.div key={review.id} whileHover={{ y: -5 }} className="bg-white p-12 rounded-[2.5rem] border border-slate-100 shadow-sm transition-all relative flex flex-col hover:shadow-2xl">
+                <FaQuoteLeft className="text-indigo-400/10 text-6xl absolute top-8 right-10" />
+                <div className="flex gap-1 text-yellow-400 mb-8">
+                  {[...Array(review.rating)].map((_, i) => <FaStar key={i} />)}
                 </div>
-                <h3 className="font-extrabold text-white mb-3 uppercase tracking-wider text-sm">{item.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{item.desc}</p>
+                <p className="text-slate-600 mb-10 text-sm leading-relaxed font-medium">
+                  "{review.text}"
+                </p>
+                <div className="flex items-center gap-4 mt-auto pt-6 border-t border-slate-100">
+                  <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                    {review.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 text-sm">
+                      {review.name}
+                    </h4>
+                    <p className="text-xs text-indigo-400 font-medium tracking-wide">
+                      {review.role}
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── DYNAMIC PRODUCTS FROM BACKEND ── */}
-      {!loading && products.length > 0 && (
-        <section className="py-24">
-          <div className="max-w-7xl mx-auto px-6">
-            <p className="text-center text-xs font-black text-white/30 uppercase tracking-[0.4em] mb-16">Product Inventory</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((prod, i) => (
-                <motion.div key={prod._id} whileHover={{ y: -6 }}
-                  className="border border-white/10 rounded-2xl overflow-hidden bg-white/2 hover:bg-white/5 transition-all group">
-                  {prod.image && (
-                    <div className="h-48 overflow-hidden">
-                      <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-60" />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <h3 className="font-extrabold text-white uppercase tracking-wider text-sm mb-2">{prod.name}</h3>
-                    <p className="text-white/40 text-xs leading-relaxed mb-4">{prod.description}</p>
-                    <button onClick={() => openWA_Prod(`Hello DVein, I'm interested in: ${prod.name}`)}
-                      className="text-xs font-bold text-dveinBlue hover:text-white transition-colors flex items-center gap-1">
-                      Learn More <FaArrowRight size={10} />
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
+      {/* FAQ */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+        <h2 className="text-3xl font-bold text-center text-slate-900 mb-16 tracking-tight">
+          Product Logs
+        </h2>
+        <div className="space-y-4">
+          {[
+            {q: "Is Cluster Redundancy Standard?", a: "Every enterprise node comes with automated backups by default." },
+            {q: "Custom AI Cluster Sync?", a: "Nodes support seamless third-party AI/ML integration." },
+            {q: "Activation Cycle Window?", a: "Full activation usually takes less than 48 hours." }
+          ].map((faq, index) => (
+            <div key={index} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+              <button 
+                onClick={() => setActiveAccordion(activeAccordion === index ? null : index)} 
+                className="w-full flex justify-between items-center p-6 text-left font-semibold text-slate-800 hover:bg-slate-50 transition-all"
+              >
+                <span className="text-sm">{faq.q}</span>
+                {activeAccordion === index 
+                  ? <FaChevronUp className="text-indigo-600"/> 
+                  : <FaChevronDown className="text-slate-300"/>}
+              </button>
+
+              <AnimatePresence>
+                {activeAccordion === index && (
+                  <motion.div 
+                    initial={{ height: 0, opacity: 0 }} 
+                    animate={{ height: "auto", opacity: 1 }} 
+                    exit={{ height: 0, opacity: 0 }} 
+                    className="bg-slate-50 px-8 pb-8 text-sm text-slate-600 font-medium leading-relaxed border-l-4 border-indigo-600 ml-6"
+                  >
+                    {faq.a}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── ROADMAP ── */}
-      <AnimatedRoadmap
-        title={p.roadmap.title}
-        subtitle={p.roadmap.subtitle}
-        accent="bg-blue-500"
-        steps={p.roadmap.steps.map((step, i) => ({
-          icon:  ROADMAP_ICONS[i % ROADMAP_ICONS.length],
-          label: step.label,
-          desc:  step.desc,
-          color: ROADMAP_COLORS[i % ROADMAP_COLORS.length],
-        }))}
-      />
-
-      {/* ── REVIEWS ── */}
-      <section className="py-24 border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 border border-white/10 px-4 py-2 rounded-full text-xs font-bold text-white/40 mb-6">
-              <FaGoogle className="text-red-400" /> {p.reviews.googleBadge}
-            </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight">{p.reviews.heading}</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {p.reviews.items.map((review, i) => (
-              <div key={review.id || i} className="border border-white/10 rounded-2xl p-8 bg-white/2">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, j) => (
-                    <FaStar key={j} size={12} className={j < review.rating ? 'text-yellow-400' : 'text-white/10'} />
-                  ))}
-                </div>
-                <FaQuoteLeft className="text-white/10 text-2xl mb-4" />
-                <p className="text-white/50 text-sm leading-relaxed italic mb-6">"{review.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-dveinBlue/20 flex items-center justify-center text-dveinBlue font-bold text-sm">
-                    {review.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-white font-bold text-sm">{review.name}</p>
-                    <p className="text-white/30 text-xs">{review.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
-      </section>
+      </div>
 
-      {/* ── FAQ ── */}
-      <section className="py-24 border-t border-white/5">
-        <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-2xl font-extrabold uppercase tracking-tight text-center mb-12">{p.faq.heading}</h2>
-          <div className="space-y-3">
-            {p.faq.items.map((item, i) => (
-              <div key={i} className="border border-white/10 rounded-xl overflow-hidden">
-                <button onClick={() => setActiveAccordion(activeAccordion === i ? null : i)}
-                  className="w-full flex items-center justify-between px-6 py-4 text-left font-bold text-white text-sm">
-                  {item.q}
-                  {activeAccordion === i ? <FaChevronUp size={12} className="text-white/40 shrink-0" /> : <FaChevronDown size={12} className="text-white/40 shrink-0" />}
-                </button>
-                <AnimatePresence>
-                  {activeAccordion === i && (
-                    <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
-                      <p className="px-6 pb-5 text-white/40 text-sm leading-relaxed border-t border-white/5 pt-4">{item.a}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      {/* FINAL CTA */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-24">
+        <button
+          onClick={() => openWA_Prod('Hello DVein Team, I want to request a custom node activation for your product.')}
+          className="bg-slate-900 text-white px-10 py-5 rounded-xl font-semibold text-sm transition-all shadow-2xl hover:bg-indigo-600 hover:-translate-y-1"
+        >
+          Request Custom Node Activation <FaArrowRight className="inline ml-3" />
+        </button>
+        <p className="mt-12 text-xs font-medium text-slate-300 tracking-wide">
+          © 2026 DVEIN • PRODUCT INFRASTRUCTURE
+        </p>
+      </div>
     </div>
   );
 };

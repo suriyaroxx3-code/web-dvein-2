@@ -360,44 +360,49 @@ const CareerHub = () => {
                   <span className="text-slate-500 text-[10px] font-bold uppercase mb-4 block">Briefing</span>
                   <h2 className="text-2xl md:text-3xl font-black text-black mb-6 uppercase underline decoration-slate-400 decoration-4 underline-offset-8 leading-tight">{selectedJob.title}</h2>
                   <p className="text-slate-500 text-xs leading-relaxed font-bold border-l-4 border-slate-300 pl-6 uppercase tracking-tight">{selectedJob.description}</p>
+                  <div className="mt-8 space-y-4">
+                    <div>
+                      <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Responsibilities</h4>
+                      {selectedJob.responsibilities?.map((r, i) => (
+                        <div key={i} className="flex items-start gap-2 mb-2">
+                          <span className="text-indigo-500 mt-0.5">•</span>
+                          <span className="text-slate-600 text-xs leading-relaxed">{r}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div>
+                      <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Requirements</h4>
+                      {selectedJob.requirements?.map((r, i) => (
+                        <div key={i} className="flex items-start gap-2 mb-2">
+                          <span className="text-green-500 mt-0.5">✓</span>
+                          <span className="text-slate-600 text-xs leading-relaxed">{r}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 <div className={(activeTab === 'form' ? 'flex' : 'hidden md:flex') + ' w-full md:w-1/2 flex-col bg-white overflow-y-auto p-10 md:p-14'}>
-                  {submitStatus === 'success' ? (
-                    <div className="h-full flex flex-col items-center justify-center text-center animate-fadeIn">
-                      <FaCheckCircle className="text-green-500 text-7xl mb-6 animate-bounce" />
-                      <h3 className="text-2xl font-black tracking-tight text-black uppercase">WhatsApp Opened!</h3>
-                      <p className="text-slate-500 text-xs mt-3 font-bold uppercase">Tap Send in WhatsApp to complete</p>
-                    </div>
-                  ) : (
-                  <form onSubmit={handleApplySubmit} className="space-y-4">
-                    <h3 className="text-xl md:text-2xl font-black tracking-tight mb-8 border-b pb-4 uppercase text-black">Boarding Pass</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <input required className="bg-slate-50 p-4 rounded-xl text-xs font-black border-none focus:ring-1 focus:ring-slate-300 uppercase shadow-inner" placeholder="FIRST" onChange={e => setFormData({...formData, firstName: e.target.value})} />
-                      <input required className="bg-slate-50 p-4 rounded-xl text-xs font-black border-none focus:ring-1 focus:ring-slate-300 uppercase shadow-inner" placeholder="LAST" onChange={e => setFormData({...formData, lastName: e.target.value})} />
-                    </div>
-                    <input required type="email" className="w-full bg-slate-50 p-4 rounded-xl text-xs font-black border-none focus:ring-1 focus:ring-slate-300 uppercase shadow-inner" placeholder="WORK EMAIL" onChange={e => setFormData({...formData, email: e.target.value})} />
-                    <input required className="w-full bg-slate-50 p-4 rounded-xl text-xs font-black border-none focus:ring-1 focus:ring-slate-300 uppercase shadow-inner" placeholder="WHATSAPP" onChange={e => setFormData({...formData, phone: e.target.value})} />
-                    <input className="w-full bg-slate-50 p-4 rounded-xl text-xs font-black border-none focus:ring-1 focus:ring-slate-300 uppercase shadow-inner" placeholder="PORTFOLIO" value={formData.portfolio} onChange={e => setFormData({...formData, portfolio: e.target.value})} />
-                    <label className="flex flex-col items-center justify-center p-10 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl cursor-pointer hover:bg-slate-100 transition-all group">
-                      <FaCloudUploadAlt className="text-slate-500 text-4xl mb-4 group-hover:scale-110 transition-transform" />
-                      <span className="text-[10px] font-black text-slate-500 uppercase text-center">{formData.resume ? formData.resume.name : 'DROP FILE'}</span>
-                      <input type="file" onChange={e => setFormData({...formData, resume: e.target.files[0]})} className="hidden" />
-                    </label>
-                    <button type="submit" disabled={isSubmitting} className="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.4em] hover:bg-black transition-all disabled:opacity-50">
-                      {isSubmitting ? 'Opening WhatsApp...' : 'Apply via WhatsApp'}
+                  <h3 className="text-lg font-black text-slate-900 uppercase mb-6">Apply for {selectedJob.title}</h3>
+                  <form className="space-y-4" onSubmit={(e) => {
+                    e.preventDefault();
+                    const fd = new FormData(e.target);
+                    const msg = `Application for ${selectedJob.title}. Name: ${fd.get('name')}, Email: ${fd.get('email')}, Phone: ${fd.get('phone')}`;
+                    window.open(`https://wa.me/919500181230?text=${encodeURIComponent(msg)}`, '_blank');
+                  }}>
+                    <input name="name" required placeholder="Full Name" className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
+                    <input name="email" type="email" required placeholder="Email Address" className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
+                    <input name="phone" required placeholder="Phone Number" className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
+                    <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all">
+                      Submit Application
                     </button>
                   </form>
-                  )}
                 </div>
               </div>
             </motion.div>
-        </div>
+          </div>
         )}
       </AnimatePresence>
 
-      <footer className="w-full py-10 text-center border-t border-slate-100">
-        <p className="text-xs text-slate-400"></p>
-      </footer>
     </div>
   );
 };

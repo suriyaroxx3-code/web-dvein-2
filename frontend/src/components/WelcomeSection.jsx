@@ -7,7 +7,7 @@ const WelcomeSection = () => {
   return (
     <section className="py-24 bg-white relative overflow-hidden">
 
-      {/* Background Decor (Subtle Tech Dots) */}
+      {/* Background Decor */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -40,7 +40,7 @@ const WelcomeSection = () => {
             </motion.div>
           </div>
 
-          {/* Right Side: 2 Core Cards (Attractive Layout) */}
+          {/* Right Side: 2 Core Cards */}
           <div className="lg:w-1/2 flex flex-col gap-6">
 
             {/* Card 1: Software */}

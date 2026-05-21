@@ -27,48 +27,29 @@ const Testimonials = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-black font-heading">Loved by Clients & Students</h2>
         </div>
 
-        {/* Swiper with Strict Columns (No Half Cuts) */}
         <Swiper
-          // Default (Mobile)
           slidesPerView={1}
           spaceBetween={20}
           loop={true}
-          centeredSlides={false} // DISABLE CENTER MODE to avoid cuts
+          centeredSlides={false}
           autoplay={{ delay: 4000, disableOnInteraction: false }}
           pagination={{ clickable: true }}
-          
-          // Responsive Breakpoints
           breakpoints={{
-            // Tablet: Exact 2 Cards
-            640: { 
-              slidesPerView: 2, 
-              spaceBetween: 20 
-            },
-            // Small Laptop: Exact 3 Cards
-            1024: { 
-              slidesPerView: 3, 
-              spaceBetween: 30 
-            },
-            // Large Monitor: Exact 3 Cards (Keeps it neat) or 4
-            1280: { 
-              slidesPerView: 3, 
-              spaceBetween: 30 
-            },
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            1024: { slidesPerView: 3, spaceBetween: 30 },
+            1280: { slidesPerView: 3, spaceBetween: 30 },
           }}
           modules={[Autoplay, Pagination]}
-          className="mySwiper !pb-16 !px-2" // Padding for Dots & Shadow
+          className="mySwiper !pb-16 !px-2"
         >
           {reviews.map((review) => (
             <SwiperSlide key={review.id} className="h-auto">
               <div className="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-sm border border-white hover:border-dveinBlue/50 hover:shadow-lg transition-all duration-300 relative h-full flex flex-col group">
                 <FaQuoteLeft className="text-dveinBlue/10 text-6xl absolute top-6 right-6 group-hover:text-dveinBlue/20 transition-colors" />
-                
                 <div className="flex gap-1 text-yellow-400 mb-6 text-lg">
                   {[...Array(review.rating)].map((_, i) => <FaStar key={i} />)}
                 </div>
-                
                 <p className="text-black mb-8 italic relative z-10 text-base leading-relaxed flex-grow">"{review.text}"</p>
-                
                 <div className="flex items-center gap-4 mt-auto pt-4 border-t border-gray-100">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-dveinBlue to-cyan-500 flex items-center justify-center text-white font-bold text-lg shadow-md">
                     {review.name.charAt(0)}

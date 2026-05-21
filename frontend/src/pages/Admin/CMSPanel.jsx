@@ -767,17 +767,25 @@ const CMSPanel = () => {
         {/* EDITOR */}
         <main className="flex-1 overflow-y-auto">
           <div className="bg-white border-b border-gray-100 px-6 lg:px-10 py-3.5 flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {activeNav && (
               <>
-                <span className="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0" style={{ background: activeNav.color + '15', color: activeNav.color }}><activeNav.icon /></span>
-                <div>
-                  <h1 className="text-sm font-bold text-gray-900">{activeNav.label}</h1>
-                  <p className="text-[11px] text-gray-400">Changes save instantly to the live website</p>
-                </div>
+                <activeNav.icon size={14} className="text-gray-400" />
+                <span className="text-sm font-bold text-gray-700">{activeNav.label}</span>
               </>
             )}
           </div>
-          <div className="p-6 lg:p-10 max-w-3xl mx-auto">{renderEditor()}</div>
+          <div className="ml-auto flex items-center gap-2">
+            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest hidden sm:block">
+              Auto-saved to localStorage
+            </span>
+          </div>
+        </div>
+
+        {/* SECTION EDITOR */}
+        <div className="px-6 lg:px-10 py-8 max-w-5xl mx-auto w-full">
+          {renderEditor()}
+        </div>
         </main>
       </div>
     </div>

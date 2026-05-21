@@ -57,29 +57,21 @@ const HowWeDo = () => {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.55, delay: 0.2 + i * 0.15 }}
             >
-              {/* Icon box with number badge */}
               <motion.div
                 className="relative mb-4"
                 whileHover={{ scale: 1.12, rotate: 3 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <div
-                  className={`w-16 h-16 rounded-2xl ${step.color} flex items-center justify-center text-white text-2xl shadow-lg ring-4 ring-white/10`}
-                >
+                <div className={`w-16 h-16 rounded-2xl ${step.color} flex items-center justify-center text-white text-2xl shadow-lg ring-4 ring-white/10`}>
                   {step.icon}
                 </div>
-                {/* Number badge */}
                 <div className="absolute -top-2 left-[60%] w-5 h-5 rounded-full bg-white text-slate-900 text-[10px] font-black flex items-center justify-center shadow">
                   {i + 1}
                 </div>
               </motion.div>
 
-              <h3 className="text-white font-bold text-sm mb-2 leading-snug px-2">
-                {step.title}
-              </h3>
-              <p className="text-slate-400 text-xs leading-relaxed px-3 max-w-[160px]">
-                {step.desc}
-              </p>
+              <h3 className="text-white font-bold text-sm mb-2 leading-snug px-2">{step.title}</h3>
+              <p className="text-slate-400 text-xs leading-relaxed px-3 max-w-[160px]">{step.desc}</p>
             </motion.div>
           ))}
         </div>
