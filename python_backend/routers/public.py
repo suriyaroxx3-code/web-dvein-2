@@ -68,6 +68,8 @@ async def get_training_page():
                 "color": "text-blue-600",
                 "desc": "Dominate the web. MERN Stack, Next.js, and System Design.",
                 "skills": ["React", "Node.js", "MongoDB", "AWS"],
+                "contactName": "Full Stack Lead",
+                "whatsappNumber": "918667363896",
             },
             {
                 "_id": 2,
@@ -76,6 +78,8 @@ async def get_training_page():
                 "color": "text-purple-600",
                 "desc": "Build the brain. Python, TensorFlow, LLMs, and Neural Networks.",
                 "skills": ["Python", "PyTorch", "OpenAI API", "HuggingFace"],
+                "contactName": "AI Training Lead",
+                "whatsappNumber": "918667363896",
             },
             {
                 "_id": 3,
@@ -84,6 +88,8 @@ async def get_training_page():
                 "color": "text-indigo-600",
                 "desc": "Scale to infinity. Docker, Kubernetes, Terraform, and CI/CD.",
                 "skills": ["AWS", "Docker", "K8s", "Linux"],
+                "contactName": "Cloud Training Lead",
+                "whatsappNumber": "918667363896",
             },
         ],
         "curriculum": {

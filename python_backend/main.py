@@ -38,4 +38,20 @@ app.include_router(public.router, prefix="/api/public")
 
 @app.get("/")
 async def root():
+    # If a built frontend exists, serve its index.html as the SPA entrypoint.
+    dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+    index_path = os.path.join(dist_dir, "index.html")
+    if os.path.exists(index_path):
+        from fastapi.responses import FileResponse
+        return FileResponse(index_path, media_type="text/html")
     return {"message": "DVein FastAPI Backend Running"}
+
+
+# Mount frontend static files (if present) to serve built assets.
+dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+if os.path.isdir(dist_dir):
+    try:
+        app.mount("/", StaticFiles(directory=dist_dir, html=True), name="frontend")
+    except Exception:
+        # If mounting at root causes issues, skip mounting and rely on explicit index route above.
+        pass

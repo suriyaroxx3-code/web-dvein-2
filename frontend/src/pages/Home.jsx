@@ -9,7 +9,6 @@ import ServiceHighlights from '../components/ServiceHighlights';
 import Stats from '../components/Stats';
 import Testimonials from '../components/Testimonials';
 import Footer from '../components/Footer';
-import WhatsAppBtn from '../components/common/WhatsAppBtn';
 
 const Home = () => {
   return (
@@ -34,7 +33,6 @@ const Home = () => {
       </main>
       
       <Footer />
-      <WhatsAppBtn />
     </div>
   );
 };

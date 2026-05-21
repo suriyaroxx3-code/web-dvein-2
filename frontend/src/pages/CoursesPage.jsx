@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useContent } from '../context/ContentContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -12,41 +11,48 @@ import AnimatedRoadmap from '../components/AnimatedRoadmap';
 import '../styles/software-solutions.css';
 
 const staticCourses = [
-  { _id: 'sc1',  title: 'Full Stack Java',                tag: 'DEV',      icon: <FaLaptopCode />,    color: 'from-blue-600 to-blue-800',    description: 'Master enterprise-grade Java development with Spring Boot, REST APIs, and scalable backend architecture.' },
-  { _id: 'sc2',  title: 'Full Stack Python',              tag: 'DEV',      icon: <FaLaptopCode />,    color: 'from-green-600 to-emerald-800', description: 'Build end-to-end Python applications with Django, Flask, and modern frontend integration.' },
-  { _id: 'sc3',  title: 'Data Science and AI',            tag: 'AI',       icon: <FaBrain />,         color: 'from-purple-600 to-purple-900', description: 'Explore data pipelines, statistical modeling, and AI-driven applications using Python and real datasets.' },
-  { _id: 'sc4',  title: 'AI & Machine Learning',          tag: 'AI',       icon: <FaBrain />,         color: 'from-indigo-600 to-indigo-900', description: 'Deep dive into supervised, unsupervised, and reinforcement learning models for production deployments.' },
-  { _id: 'sc5',  title: 'Data Analytics',                 tag: 'DATA',     icon: <FaChartLine />,     color: 'from-teal-500 to-teal-800',    description: 'Transform raw data into actionable insights with advanced analytics tools and visualization techniques.' },
-  { _id: 'sc6',  title: 'Business Analytics',             tag: 'BIZ',      icon: <FaChartLine />,     color: 'from-orange-500 to-orange-800', description: 'Drive strategic decisions through data-driven business modeling, KPIs, and BI dashboards.' },
-  { _id: 'sc7',  title: 'DevOps',                         tag: 'OPS',      icon: <FaCogs />,          color: 'from-slate-600 to-slate-900',  description: 'CI/CD pipelines, containerization, and infrastructure automation for modern software delivery.' },
-  { _id: 'sc8',  title: 'Cloud Computing',                tag: 'CLOUD',    icon: <FaCloudUploadAlt />,color: 'from-sky-500 to-sky-800',      description: 'Deploy, scale, and manage applications on AWS, Azure, and GCP with cloud-native best practices.' },
-  { _id: 'sc9',  title: 'MERN Stack',                     tag: 'DEV',      icon: <FaLayerGroup />,    color: 'from-blue-500 to-cyan-700',    description: 'Build full-stack web apps with MongoDB, Express, React, and Node.js in a cohesive workflow.' },
-  { _id: 'sc10', title: 'UI/UX Design and Prototyping',   tag: 'DESIGN',   icon: <FaDraftingCompass />,color: 'from-pink-500 to-rose-700',   description: 'Design intuitive user interfaces and interactive prototypes using Figma and design system principles.' },
-  { _id: 'sc11', title: 'Web Development',                tag: 'DEV',      icon: <FaGlobe />,         color: 'from-blue-500 to-blue-800',    description: 'Core and advanced web development covering HTML, CSS, JavaScript, and modern frameworks.' },
-  { _id: 'sc12', title: 'IOT',                            tag: 'HARDWARE', icon: <FaMicrochip />,     color: 'from-green-500 to-green-800',  description: 'Connect physical devices to the internet with sensor integration, protocols, and cloud IoT platforms.' },
-  { _id: 'sc13', title: 'Embedded Systems',               tag: 'HARDWARE', icon: <FaMicrochip />,     color: 'from-amber-500 to-amber-800',  description: 'Program microcontrollers, real-time systems, and low-level hardware interfaces for embedded applications.' },
-  { _id: 'sc14', title: 'Cybersecurity',                  tag: 'SECURITY', icon: <FaShieldAlt />,     color: 'from-red-600 to-red-900',      description: 'Ethical hacking, threat analysis, and secure system design following OWASP and industry standards.' },
-  { _id: 'sc15', title: 'Big Data Analytics',             tag: 'DATA',     icon: <FaNetworkWired />,  color: 'from-violet-600 to-violet-900',description: 'Process and analyze massive datasets using Hadoop, Spark, and distributed computing frameworks.' },
-  { _id: 'sc16', title: 'HR - Operations',                tag: 'HR',       icon: <FaUsers />,         color: 'from-slate-500 to-slate-800',  description: 'Streamline HR workflows, talent acquisition, and workforce management with modern HR tools.' },
-  { _id: 'sc17', title: 'HR - Marketing',                 tag: 'HR',       icon: <FaUsers />,         color: 'from-rose-500 to-rose-800',    description: 'Employer branding, talent marketing strategies, and HR communication for modern organizations.' },
-  { _id: 'sc18', title: 'HR - Finance & Accounting',      tag: 'HR',       icon: <FaUsers />,         color: 'from-emerald-600 to-emerald-900',description: 'Payroll management, financial reporting, and accounting fundamentals for HR professionals.' },
-  { _id: 'sc19', title: 'Digital Marketing',              tag: 'MARKETING',icon: <FaRocket />,        color: 'from-orange-500 to-amber-700', description: 'SEO, social media strategy, paid advertising, and analytics for impactful digital campaigns.' },
-  { _id: 'sc20', title: 'Software Testing',               tag: 'QA',       icon: <FaCheckCircle />,   color: 'from-cyan-600 to-cyan-900',    description: 'Manual and automated testing, test case design, and QA methodologies for production software.' },
+  { _id: 'sc1', title: 'Full Stack Java', tag: 'JAVA', icon: <FaLaptopCode />, color: 'from-blue-600 to-blue-800', description: 'Build enterprise-grade applications with Java, Spring Boot, and modern frontend frameworks.' },
+  { _id: 'sc2', title: 'Full Stack Python', tag: 'PYTHON', icon: <FaLaptopCode />, color: 'from-slate-600 to-slate-900', description: 'Create end-to-end Python applications using Django, Flask, and data-driven backends.' },
+  { _id: 'sc3', title: 'Data Science and AI', tag: 'AI', icon: <FaBrain />, color: 'from-purple-500 to-purple-800', description: 'Master machine learning, statistical modeling, and AI-driven data solutions.' },
+  { _id: 'sc4', title: 'AI & Machine Learning', tag: 'ML', icon: <FaBrain />, color: 'from-indigo-500 to-cyan-700', description: 'Develop intelligent systems with deep learning, NLP, and production-ready ML pipelines.' },
+  { _id: 'sc5', title: 'Data Analytics', tag: 'DATA', icon: <FaChartLine />, color: 'from-cyan-500 to-sky-700', description: 'Analyze business data, build dashboards, and derive actionable insights.' },
+  { _id: 'sc6', title: 'Web Development', tag: 'WEB', icon: <FaGlobe />, color: 'from-teal-500 to-slate-700', description: 'Craft responsive web experiences with modern frontend and backend stacks.' },
+  { _id: 'sc7', title: 'IOT', tag: 'IOT', icon: <FaMicrochip />, color: 'from-emerald-500 to-teal-700', description: 'Connect devices, sensors, and cloud platforms to build smart IoT systems.' },
+  { _id: 'sc8', title: 'Embedded Systems', tag: 'EMBED', icon: <FaMicrochip />, color: 'from-slate-700 to-indigo-900', description: 'Design firmware, real-time systems, and embedded hardware solutions.' },
+  { _id: 'sc9', title: 'Cybersecurity', tag: 'SEC', icon: <FaShieldAlt />, color: 'from-emerald-700 to-slate-900', description: 'Protect systems with security testing, threat analysis, and defense architecture.' },
+  { _id: 'sc10', title: 'Big Data Analytics', tag: 'BIG', icon: <FaChartLine />, color: 'from-blue-700 to-slate-900', description: 'Process large-scale datasets with big data frameworks and practical analytics workflows.' },
+  { _id: 'sc11', title: 'Human Resources', tag: 'HR', icon: <FaUsers />, color: 'from-violet-600 to-fuchsia-700', description: 'Learn HR operations, talent management, and workforce analytics for modern organizations.' },
+  { _id: 'sc12', title: 'Digital Marketing', tag: 'MARKET', icon: <FaBolt />, color: 'from-pink-600 to-rose-700', description: 'Execute performance marketing, social media campaigns, and digital growth strategies.' },
+  { _id: 'sc13', title: 'Software Testing', tag: 'QA', icon: <FaCheckCircle />, color: 'from-slate-600 to-slate-900', description: 'Validate software quality with testing automation, QA frameworks, and process improvements.' },
 ];
 
 const AcademyPage = () => {
-  const { content } = useContent();
-  const cms = content.courses;
   const [trainings, setTrainings] = useState([]);
   const [activeAccordion, setActiveAccordion] = useState(null);
 
   // ── Enrollment Modal State ──────────────────────────────────────────────────
   const WA_NUMBER = '918667363896';
   const [enrollModal, setEnrollModal] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState('');
+  const [selectedCourse, setSelectedCourse] = useState('DVein Academy — Full Program');
   const [enrollForm, setEnrollForm] = useState({ firstName: '', lastName: '', email: '', phone: '', portfolio: '' });
   const [enrollSubmitting, setEnrollSubmitting] = useState(false);
   const [enrollStatus, setEnrollStatus] = useState(null); // null | 'success'
+
+  const [courseForm, setCourseForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    course: staticCourses[0]?.title || '',
+    portfolio: '',
+    resume: null,
+  });
+  const [courseSubmitting, setCourseSubmitting] = useState(false);
+  const [courseSuccess, setCourseSuccess] = useState(false);
+
+  const getWhatsAppLink = (phone, title) => {
+    const text = `Hello DVein team, I am interested in the ${title} program. Please share the details.`;
+    return `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
+  };
 
   const openEnroll = (courseTitle = 'DVein Course') => {
     setSelectedCourse(courseTitle);
@@ -91,6 +97,31 @@ const AcademyPage = () => {
     setEnrollSubmitting(false);
   };
 
+  const handleCourseSubmit = (e) => {
+    e.preventDefault();
+    setCourseSubmitting(true);
+
+    const selected = selectedCourseItem || { title: courseForm.course, whatsappNumber: WA_NUMBER };
+    const waText = [
+      `*Course Application — DVein Innovations*`,
+      ``,
+      `*Course:* ${selected.title}`,
+      `*Name:* ${courseForm.name}`,
+      `*Email:* ${courseForm.email}`,
+      `*Phone:* ${courseForm.phone}`,
+      `*Portfolio:* ${courseForm.portfolio || 'Not provided'}`,
+      `*Resume:* ${courseForm.resume?.name || 'Not provided'}`,
+      ``,
+      `_Sent from DVein Website_`,
+    ].join('\n');
+
+    const destination = (selected.whatsappNumber || WA_NUMBER).replace(/\D/g, '');
+    window.open(`https://wa.me/${destination}?text=${encodeURIComponent(waText)}`, '_blank');
+
+    setCourseSubmitting(false);
+    setCourseSuccess(true);
+  };
+
   useEffect(() => {
     fetch('http://localhost:5000/api/public/trainings')
       .then(res => res.json())
@@ -98,36 +129,28 @@ const AcademyPage = () => {
       .catch(err => console.error(err));
   }, []);
 
-  // CMS-aware data — falls back to hardcoded defaults if not set
-  const staticFeatures = [
+  const coursesToDisplay = trainings.length > 0
+    ? trainings
+    : staticCourses.map(course => ({
+        ...course,
+        whatsappNumber: WA_NUMBER,
+        contactName: `${course.title} Advisor`,
+      }));
+
+  const selectedCourseItem = coursesToDisplay.find(c => c.title === courseForm.course) || coursesToDisplay[0];
+
+  const features = [
     { icon: <FaBolt />, title: "PR-Driven Learning", desc: "Real production workflows with architectural feedback from senior engineers." },
     { icon: <FaShieldAlt />, title: "Security First", desc: "OWASP standards and secure database architecture from day one." },
     { icon: <FaUsers />, title: "Collective Sync", desc: "Daily collaboration with high-performance engineering teams." },
     { icon: <FaChartLine />, title: "Growth Maps", desc: "Structured career tracks to accelerate seniority." },
   ];
-  const cmsFeatures = cms?.features?.length ? cms.features : null;
-  const features = staticFeatures.map((f, i) => ({
-    ...f,
-    title: cmsFeatures?.[i]?.title ?? f.title,
-    desc:  cmsFeatures?.[i]?.desc  ?? f.desc,
-  }));
 
-  const staticFaqs = [
+  const faqs = [
     { question: "Is this for absolute beginners?", answer: "We start with fundamentals and scale into real engineering workflows." },
     { question: "Do I get to work on real projects?", answer: "Top performers join live production builds and client simulations." },
     { question: "What about certificate validation?", answer: "All certifications are ledger-verified and globally shareable." },
   ];
-  const cmsFaqs = cms?.faqs?.length ? cms.faqs : null;
-  const faqs = staticFaqs.map((f, i) => ({
-    question: cmsFaqs?.[i]?.question ?? f.question,
-    answer:   cmsFaqs?.[i]?.answer   ?? f.answer,
-  }));
-
-  // CMS courses merged with static icon/color metadata
-  const displayCourses = staticCourses.map((sc, i) => {
-    const cmsC = cms?.courses?.[i];
-    return { ...sc, title: cmsC?.title ?? sc.title, description: cmsC?.description ?? sc.description, tag: cmsC?.tag ?? sc.tag };
-  });
 
   return (
     <div className="font-sans text-slate-900 bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen pt-24 pb-16">
@@ -136,15 +159,17 @@ const AcademyPage = () => {
       <section className="max-w-7xl mx-auto px-6 pt-10 pb-20 text-center">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
           <span className="inline-block py-1.5 px-4 rounded-full bg-indigo-50 text-indigo-600 font-extrabold tracking-widest uppercase text-[10px] mb-8 border border-indigo-100">
-            {cms?.hero?.badge || 'Academy Hub'}
+            Academy Hub
           </span>
 
-          <h1 className="text-4xl md:text-6xl font-semibold text-slate-900 leading-tight mb-6 tracking-tight" style={{ whiteSpace: 'pre-line' }}>
-            {cms?.hero?.headline ? cms.hero.headline.replace(/\\n/g, '\n') : 'Master the\nEngineering Stack'}
+          <h1 className="text-4xl md:text-6xl font-semibold text-slate-900 leading-tight mb-6 tracking-tight">
+            Master the <br />
+            <span className="text-black">Engineering Stack</span>
           </h1>
 
           <p className="max-w-3xl mx-auto text-base text-slate-600 leading-relaxed font-medium mb-10">
-            {cms?.hero?.description || 'Beyond syntax, we focus on engineering scalability. DVein Academy transforms learners into industry-ready engineers through production-grade simulation.'}
+            Beyond syntax, we focus on engineering scalability. DVein Academy transforms learners into
+            industry-ready engineers through production-grade simulation.
           </p>
 
           <div className="flex justify-center gap-4">
@@ -196,54 +221,101 @@ const AcademyPage = () => {
         ]}
       />
 
-      {/* PROGRAM GRID – ENTERPRISE STYLE */}
-<section className="max-w-7xl mx-auto px-6 mb-28">
-  <div className="text-center mb-14">
-    <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-2">
-      Active Programs
-    </h2>
-    <p className="text-sm text-slate-500">
-      Industry-aligned technical programs
-    </p>
-  </div>
-
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-    {/* Show CMS-editable static courses; fall back to backend trainings if CMS list is empty */}
-    {(displayCourses.length > 0 ? displayCourses : trainings).map((course) => (
-      <motion.div
-        key={course._id}
-        whileHover={{ y: -4 }}
-        transition={{ duration: 0.25 }}
-        className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md overflow-hidden flex flex-col"
-      >
-        {/* Gradient header with icon */}
-        <div className={`relative h-36 flex items-center justify-center bg-gradient-to-br ${course.color || 'from-indigo-600 to-indigo-800'}`}>
-          <div className="text-white text-4xl opacity-80">{course.icon}</div>
-          <div className="absolute top-3 left-3 bg-black/30 text-white px-3 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider">
-            {course.tag || 'PRO'}
+      {/* COURSE APPLICATION FORM */}
+      <section className="max-w-6xl mx-auto px-6 mb-28">
+        <div className="bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-8 md:p-12">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-black text-slate-900">Apply Now</h2>
+            <p className="mt-2 text-sm text-slate-500">Fill the form — WhatsApp will open with your details ready to send.</p>
           </div>
-        </div>
 
-        {/* Content */}
-        <div className="p-6 flex flex-col flex-1">
-          <h3 className="text-base font-bold text-slate-900 mb-2">{course.title}</h3>
-          <p className="text-sm text-slate-500 leading-relaxed mb-4 flex-1">
-            {course.description || 'Production-grade program focused on real-world engineering practices and collaborative workflows.'}
-          </p>
-          <div className="flex items-center gap-2 text-indigo-600 text-xs font-semibold mb-3">
-            <FaCheckCircle className="text-indigo-500" /> Active Program
-          </div>
-          <button
-            onClick={() => openEnroll(course.title)}
-            className="w-full py-2.5 bg-indigo-600 text-white rounded-lg font-medium text-sm hover:bg-indigo-700 transition text-center"
-          >
-            {cms?.hero?.primaryBtn || 'Enroll Now'}
-          </button>
+          <form onSubmit={handleCourseSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label className="block">
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Name *</span>
+                <input
+                  required
+                  value={courseForm.name}
+                  onChange={e => setCourseForm(p => ({ ...p, name: e.target.value }))}
+                  className="mt-2 w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-4 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                  placeholder="Your Name"
+                />
+              </label>
+              <label className="block">
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Email *</span>
+                <input
+                  type="email"
+                  required
+                  value={courseForm.email}
+                  onChange={e => setCourseForm(p => ({ ...p, email: e.target.value }))}
+                  className="mt-2 w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-4 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                  placeholder="you@example.com"
+                />
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label className="block">
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Phone no *</span>
+                <input
+                  required
+                  value={courseForm.phone}
+                  onChange={e => setCourseForm(p => ({ ...p, phone: e.target.value }))}
+                  className="mt-2 w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-4 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                  placeholder="+91 98765 43210"
+                />
+              </label>
+              <label className="block">
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Course *</span>
+                <select
+                  required
+                  value={courseForm.course}
+                  onChange={e => setCourseForm(p => ({ ...p, course: e.target.value }))}
+                  className="mt-2 w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-4 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                >
+                  {coursesToDisplay.map(course => (
+                    <option key={course._id} value={course.title}>{course.title}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <label className="block">
+              <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Portfolio / LinkedIn / GitHub (optional)</span>
+              <input
+                value={courseForm.portfolio}
+                onChange={e => setCourseForm(p => ({ ...p, portfolio: e.target.value }))}
+                className="mt-2 w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-4 text-sm outline-none focus:ring-2 focus:ring-indigo-200"
+                placeholder="https://github.com/yourname"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Resume (optional, PDF/DOC)</span>
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={e => setCourseForm(p => ({ ...p, resume: e.target.files?.[0] || null }))}
+                className="mt-2 w-full text-sm text-slate-700"
+              />
+            </label>
+
+            <button
+              type="submit"
+              disabled={courseSubmitting}
+              className="w-full py-4 bg-blue-600 text-white rounded-2xl font-semibold text-sm hover:bg-blue-700 transition disabled:opacity-60"
+            >
+              {courseSubmitting ? 'Opening WhatsApp...' : 'Submit via WhatsApp'}
+            </button>
+
+            {courseSuccess && (
+              <div className="rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+                WhatsApp opened successfully. Please complete the message in WhatsApp and tap Send.
+              </div>
+            )}
+          </form>
         </div>
-      </motion.div>
-    ))}
-  </div>
-</section>
+      </section>
 
       {/* FAQ */}
       <section className="max-w-4xl mx-auto px-6 mb-24">
