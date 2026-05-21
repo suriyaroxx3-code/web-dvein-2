@@ -8,6 +8,7 @@ import WhyChooseUs from '../components/WhyChooseUs';
 import ServiceHighlights from '../components/ServiceHighlights';
 import Stats from '../components/Stats';
 import Testimonials from '../components/Testimonials';
+import MeetTeam from '../components/MeetTeam';
 import Footer from '../components/Footer';
 import WhatsAppBtn from '../components/common/WhatsAppBtn';
 
@@ -31,6 +32,7 @@ const Home = () => {
         <ServiceHighlights />
         <Stats />
         <Testimonials />
+        <MeetTeam />
       </main>
       
       <Footer />
