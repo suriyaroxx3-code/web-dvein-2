@@ -22,76 +22,74 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 
-// ADMIN AUTH (NEW ADDITION) - Path pathukonga
+// ADMIN
 import AdminLogin from './pages/Admin/AdminLogin';
 import Dashboard from './pages/Admin/Dashboard';
+import CMSPanel from './pages/Admin/CMSPanel';
 
 // FOOTER & WHATSAPP
 import Footer from './components/Footer';
 import WhatsAppBtn from './components/common/WhatsAppBtn';
 
-// Dummy Courses Page
-const Courses = () => <div className="h-screen flex items-center justify-center text-3xl font-bold text-gray-600">Courses Coming Soon!</div>;
+// CMS CONTEXT
+import { ContentProvider } from './context/ContentContext';
 
 const Layout = () => {
   const location = useLocation();
 
-  // Navbar & Footer should NOT appear on Admin Pages or Our Story Page
-  const isHomePage = location.pathname === '/';
-  const isAdminPage = location.pathname.startsWith('/admin');
+  const isHomePage    = location.pathname === '/';
+  const isAdminPage   = location.pathname.startsWith('/admin');
   const isOurStoryPage = location.pathname === '/our-story';
 
   return (
     <>
       <ScrollToTop />
 
-      {/* Navbar Hide on Home, Admin & Our Story Pages */}
+      {/* Navbar: hide on Home, Admin & Our Story pages */}
       {!isHomePage && !isAdminPage && !isOurStoryPage && <Navbar />}
 
       <Routes>
         {/* PUBLIC ROUTES */}
-        <Route path="/" element={<Home />} />
+        <Route path="/"                  element={<Home />} />
         <Route path="/services/software" element={<SoftwareSolutions />} />
-        <Route path="/services/courses" element={<CoursesPage />} />
-        <Route path="/training" element={<Training />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/career-hub" element={<CareerHub />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/student-projects" element={<StudentProjects />} />
-        <Route path="/collaboration" element={<Collaborations />} />
-        <Route path="/our-story" element={<OurStory />} />
-        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/services/courses"  element={<CoursesPage />} />
+        <Route path="/training"          element={<Training />} />
+        <Route path="/products"          element={<Products />} />
+        <Route path="/career-hub"        element={<CareerHub />} />
+        <Route path="/contact"           element={<Contact />} />
+        <Route path="/student-projects"  element={<StudentProjects />} />
+        <Route path="/collaboration"     element={<Collaborations />} />
+        <Route path="/our-story"         element={<OurStory />} />
+        <Route path="/privacy"           element={<Privacy />} />
 
         {/* USER AUTH ROUTES */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/user-dashboard" element={<UserDashboard />} />
+        <Route path="/login"             element={<Login />} />
+        <Route path="/register"          element={<Register />} />
+        <Route path="/user-dashboard"    element={<UserDashboard />} />
 
-        {/* ADMIN ROUTES (NEW) */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin-dashboard" element={<Dashboard />} />
+        {/* ADMIN ROUTES */}
+        <Route path="/admin/login"       element={<AdminLogin />} />
+        <Route path="/admin/dashboard"   element={<Dashboard />} />
+        <Route path="/admin-dashboard"   element={<Dashboard />} />
+        <Route path="/admin/cms"         element={<CMSPanel />} />
 
-        {/* 404 PAGE */}
-        <Route path="*" element={<NotFound />} />
+        {/* 404 */}
+        <Route path="*"                  element={<NotFound />} />
       </Routes>
 
-      {/* Footer Hide on Home, Admin & Our Story Pages */}
-      {!isHomePage && !isAdminPage && !isOurStoryPage && (
-        <>
-          <Footer />
-          <WhatsAppBtn />
-        </>
-      )}
+      {/* Footer & WhatsApp: hide on Home (has its own), Admin & Our Story pages */}
+      {!isHomePage && !isAdminPage && !isOurStoryPage && <Footer />}
+      {!isHomePage && !isAdminPage && <WhatsAppBtn />}
     </>
   );
 };
 
-const App = () => {
-  return (
+const App = () => (
+  <ContentProvider>
     <Router>
       <Layout />
     </Router>
-  );
-};
+  </ContentProvider>
+);
 
 export default App;

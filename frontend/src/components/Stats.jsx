@@ -1,20 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-
-const stats = [
-  { id: 1, name: 'Projects Completed', value: '50+' },
-  { id: 2, name: 'Students Trained', value: '200+' },
-  { id: 3, name: 'Happy Clients', value: '20+' },
-  { id: 4, name: 'Years of Innovation', value: '2+' },
-];
+import { useContent } from '../context/ContentContext';
 
 const Stats = () => {
+  const { content } = useContent();
+  const stats = content.stats;
+
   return (
     <div className="bg-white py-12 border-b border-gray-100">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <dl className="grid grid-cols-1 gap-y-10 gap-x-8 text-center lg:grid-cols-4">
           {stats.map((stat, index) => (
-            <motion.div 
+            <motion.div
               key={stat.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -24,7 +21,9 @@ const Stats = () => {
               <dd className="order-first text-4xl font-bold tracking-tight text-dveinBlue sm:text-5xl">
                 {stat.value}
               </dd>
-              <dt className="text-base leading-7 text-gray-600 font-semibold">{stat.name}</dt>
+              <dt className="text-base leading-7 text-gray-600 font-medium">
+                {stat.name}
+              </dt>
             </motion.div>
           ))}
         </dl>
