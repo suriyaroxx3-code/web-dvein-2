@@ -186,7 +186,7 @@ const Training = () => {
         <div className="animate-marquee inline-block whitespace-nowrap">
           {[1,2,3].map(i => (
             <span key={i} className="mx-10 text-gray-900 font-black text-xl uppercase tracking-tighter">
-              200+ Students &bull; 100+ Projects &bull; 20+ Courses &bull;
+              1000+ Students &bull; 500+ Projects &bull; 20+ Courses &bull;
             </span>
           ))}
         </div>
