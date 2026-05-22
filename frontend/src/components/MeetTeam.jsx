@@ -6,12 +6,23 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { useContent } from '../context/ContentContext';
 
+// Eagerly import all asset images so Vite bundles them and we can resolve by filename
 const teamAssets = import.meta.glob('../assets/*.{png,jpg,jpeg,webp}', { eager: true, import: 'default' });
 
+const PLACEHOLDER = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><rect width="160" height="160" fill="%23e5e7eb"/><circle cx="80" cy="64" r="28" fill="%23d1d5db"/><ellipse cx="80" cy="128" rx="44" ry="32" fill="%23d1d5db"/></svg>';
+
 const resolveTeamImage = (image) => {
-  if (!image) return '';
+  if (!image) return PLACEHOLDER;
+  // data: URIs (uploaded/compressed images), http(s) URLs, absolute paths — use directly
   if (/^(data:|https?:|\/)/.test(image)) return image;
-  return teamAssets[`../assets/${image}`] || image;
+  // Local asset filename — look up the Vite-bundled asset map
+  const resolved = teamAssets[`../assets/${image}`];
+  if (resolved) return resolved;
+  // Try with different capitalisation (e.g. Yasik.png stored differently)
+  const key = Object.keys(teamAssets).find(
+    k => k.toLowerCase() === `../assets/${image}`.toLowerCase()
+  );
+  return key ? teamAssets[key] : PLACEHOLDER;
 };
 
 const MeetTeam = () => {
@@ -19,23 +30,25 @@ const MeetTeam = () => {
   const cms = content?.meetTeam || {};
   const teamMembers = Array.isArray(cms.members) ? cms.members.filter(Boolean) : [];
 
+  if (teamMembers.length === 0) return null;
+
   return (
     <section className="bg-white py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <p className="text-sm font-black uppercase tracking-[0.28em] text-dveinGreen mb-3">{cms.eyebrow || 'Our People'}</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-black font-heading">{cms.heading || 'Meet the crew'}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-black font-heading">{cms.heading || 'Meet the Crew'}</h2>
         </div>
 
         <Swiper
           slidesPerView={1}
           spaceBetween={22}
-          loop={false}
+          loop={teamMembers.length > 3}
           autoplay={{ delay: 3200, disableOnInteraction: false }}
           pagination={{ clickable: true }}
           breakpoints={{
-            640: { slidesPerView: 2, spaceBetween: 22 },
-            1024: { slidesPerView: 3, spaceBetween: 28 },
+            640: { slidesPerView: Math.min(2, teamMembers.length), spaceBetween: 22 },
+            1024: { slidesPerView: Math.min(3, teamMembers.length), spaceBetween: 28 },
           }}
           modules={[Autoplay, Pagination]}
           className="!pb-14 !px-2"
@@ -55,6 +68,7 @@ const MeetTeam = () => {
                       src={resolveTeamImage(member.image)}
                       alt={member.name || 'Team member'}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => { e.target.src = PLACEHOLDER; }}
                     />
                   </div>
                 </div>

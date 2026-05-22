@@ -1,4 +1,70 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+// ─── PERSISTENT STORAGE (localStorage + IndexedDB fallback) ──────────────────
+const IDB_NAME = 'dvein_cms_db';
+const IDB_STORE = 'content';
+const IDB_KEY   = 'dvein_cms_content';
+
+const idbSave = (data) => new Promise((resolve) => {
+  try {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = (e) => e.target.result.createObjectStore(IDB_STORE);
+    req.onsuccess = (e) => {
+      const tx = e.target.result.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).put(data, IDB_KEY);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror    = () => resolve(false);
+    };
+    req.onerror = () => resolve(false);
+  } catch { resolve(false); }
+});
+
+const idbLoad = () => new Promise((resolve) => {
+  try {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = (e) => e.target.result.createObjectStore(IDB_STORE);
+    req.onsuccess = (e) => {
+      const tx = e.target.result.transaction(IDB_STORE, 'readonly');
+      const get = tx.objectStore(IDB_STORE).get(IDB_KEY);
+      get.onsuccess = () => resolve(get.result ?? null);
+      get.onerror   = () => resolve(null);
+    };
+    req.onerror = () => resolve(null);
+  } catch { resolve(null); }
+});
+
+const idbClear = () => new Promise((resolve) => {
+  try {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onsuccess = (e) => {
+      const tx = e.target.result.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).delete(IDB_KEY);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror    = () => resolve(false);
+    };
+    req.onerror = () => resolve(false);
+  } catch { resolve(false); }
+});
+
+const persistContent = (data) => {
+  const json = JSON.stringify(data);
+  try {
+    localStorage.setItem('dvein_cms_content', json);
+  } catch {
+    // localStorage full (likely large base64 images) — fall back to IndexedDB
+    try { localStorage.removeItem('dvein_cms_content'); } catch {}
+    idbSave(data);
+  }
+};
+
+const loadPersistedContent = async () => {
+  try {
+    const ls = localStorage.getItem('dvein_cms_content');
+    if (ls) return JSON.parse(ls);
+  } catch {}
+  // Try IndexedDB fallback
+  return await idbLoad();
+};
 
 export const defaultContent = {
   // ─── HOME PAGE ────────────────────────────────────────────────────────────
@@ -63,6 +129,25 @@ export const defaultContent = {
     phone: "+91 95001 81230",
     email: "info@dveininnovations.com",
     copyright: "DVein Innovations. All Rights Reserved."
+  },
+
+  // ─── MEET THE CREW ────────────────────────────────────────────────────────
+  meetTeam: {
+    eyebrow: "Our People",
+    heading: "Meet the Crew",
+    members: [
+      { id: 1,  name: "Navin",       role: "Founder & Director",        image: "navin.png"       },
+      { id: 2,  name: "Arsal",       role: "Co-Founder",                image: "arsal.png"       },
+      { id: 3,  name: "Suriya",      role: "Lead Developer",            image: "suriya.jpeg"     },
+      { id: 4,  name: "Nivash",      role: "Full Stack Developer",      image: "nivash.jpeg"     },
+      { id: 5,  name: "Prasanth",    role: "Software Engineer",         image: "prasanth.jpeg"   },
+      { id: 6,  name: "Munik",       role: "UI/UX Designer",           image: "munik.jpeg"      },
+      { id: 7,  name: "Jayasri",     role: "Project Manager",           image: "jayasri.jpeg"    },
+      { id: 8,  name: "Selvamani",   role: "Backend Developer",         image: "selvamani.jpeg"  },
+      { id: 9,  name: "Sidhar",      role: "Embedded Systems Engineer", image: "sidhar.jpeg"     },
+      { id: 10, name: "Aruna",       role: "Training Coordinator",      image: "aruna.jpeg"      },
+      { id: 11, name: "Yasik",       role: "AI/ML Engineer",            image: "Yasik.png"       },
+    ]
   },
 
   // ─── INTERNSHIPS PAGE ─────────────────────────────────────────────────────
@@ -373,42 +458,59 @@ export const defaultContent = {
 // ─── CONTEXT ──────────────────────────────────────────────────────────────────
 const ContentContext = createContext(null);
 
+const buildContent = (p) => {
+  if (!p) return defaultContent;
+  const merge = (key) => {
+    if (!p[key]) return defaultContent[key];
+    if (Array.isArray(defaultContent[key])) return p[key];
+    return { ...defaultContent[key], ...p[key] };
+  };
+  return {
+    hero:              { slides: p.hero?.slides || defaultContent.hero.slides },
+    welcome:           merge('welcome'),
+    stats:             p.stats || defaultContent.stats,
+    howWeDo:           { ...merge('howWeDo'), steps: p.howWeDo?.steps || defaultContent.howWeDo.steps },
+    whyChooseUs:       { ...merge('whyChooseUs'), features: p.whyChooseUs?.features || defaultContent.whyChooseUs.features },
+    testimonials:      { ...merge('testimonials'), reviews: p.testimonials?.reviews || defaultContent.testimonials.reviews },
+    footer:            merge('footer'),
+    meetTeam:          p.meetTeam ? { ...defaultContent.meetTeam, ...p.meetTeam, members: Array.isArray(p.meetTeam.members) ? p.meetTeam.members : defaultContent.meetTeam.members } : defaultContent.meetTeam,
+    internships:       p.internships       ? { ...defaultContent.internships,       ...p.internships       } : defaultContent.internships,
+    products:          p.products          ? { ...defaultContent.products,          ...p.products          } : defaultContent.products,
+    studentProjects:   p.studentProjects   ? { ...defaultContent.studentProjects,   ...p.studentProjects   } : defaultContent.studentProjects,
+    softwareSolutions: p.softwareSolutions ? { ...defaultContent.softwareSolutions, ...p.softwareSolutions } : defaultContent.softwareSolutions,
+    courses:           p.courses           ? { ...defaultContent.courses,           ...p.courses           } : defaultContent.courses,
+    ourStory:          p.ourStory          ? { ...defaultContent.ourStory,          ...p.ourStory          } : defaultContent.ourStory,
+    collaborations:    p.collaborations    ? { ...defaultContent.collaborations,    ...p.collaborations    } : defaultContent.collaborations,
+    contact:           merge('contact'),
+  };
+};
+
 export const ContentProvider = ({ children }) => {
   const [content, setContent] = useState(() => {
+    // Synchronous first load from localStorage
     try {
       const saved = localStorage.getItem('dvein_cms_content');
-      if (!saved) return defaultContent;
-      const p = JSON.parse(saved);
-      const merge = (key) => {
-        if (!p[key]) return defaultContent[key];
-        if (Array.isArray(defaultContent[key])) return p[key];
-        return { ...defaultContent[key], ...p[key] };
-      };
-      const deepMerge = (key) => p[key] ? { ...defaultContent[key], ...p[key] } : defaultContent[key];
-      return {
-        hero:              { slides: p.hero?.slides || defaultContent.hero.slides },
-        welcome:           merge('welcome'),
-        stats:             p.stats || defaultContent.stats,
-        howWeDo:           { ...merge('howWeDo'), steps: p.howWeDo?.steps || defaultContent.howWeDo.steps },
-        whyChooseUs:       { ...merge('whyChooseUs'), features: p.whyChooseUs?.features || defaultContent.whyChooseUs.features },
-        testimonials:      { ...merge('testimonials'), reviews: p.testimonials?.reviews || defaultContent.testimonials.reviews },
-        footer:            merge('footer'),
-        internships:       p.internships       ? { ...defaultContent.internships,       ...p.internships       } : defaultContent.internships,
-        products:          p.products          ? { ...defaultContent.products,          ...p.products          } : defaultContent.products,
-        studentProjects:   p.studentProjects   ? { ...defaultContent.studentProjects,   ...p.studentProjects   } : defaultContent.studentProjects,
-        softwareSolutions: p.softwareSolutions ? { ...defaultContent.softwareSolutions, ...p.softwareSolutions } : defaultContent.softwareSolutions,
-        courses:           p.courses           ? { ...defaultContent.courses,           ...p.courses           } : defaultContent.courses,
-        ourStory:          p.ourStory          ? { ...defaultContent.ourStory,          ...p.ourStory          } : defaultContent.ourStory,
-        collaborations:    p.collaborations    ? { ...defaultContent.collaborations,    ...p.collaborations    } : defaultContent.collaborations,
-        contact:           merge('contact'),
-      };
-    } catch { return defaultContent; }
+      if (saved) return buildContent(JSON.parse(saved));
+    } catch {}
+    return defaultContent;
   });
+
+  // On mount, also check IndexedDB (for when localStorage was full)
+  useEffect(() => {
+    (async () => {
+      try {
+        const ls = localStorage.getItem('dvein_cms_content');
+        if (ls) return; // localStorage already loaded — no need to check IDB
+      } catch {}
+      const idb = await idbLoad();
+      if (idb) setContent(buildContent(idb));
+    })();
+  }, []);
 
   const updateSection = (section, data) => {
     setContent(prev => {
       const updated = { ...prev, [section]: data };
-      try { localStorage.setItem('dvein_cms_content', JSON.stringify(updated)); } catch {}
+      persistContent(updated);
       return updated;
     });
   };
@@ -416,6 +518,7 @@ export const ContentProvider = ({ children }) => {
   const resetSection = (section) => updateSection(section, defaultContent[section]);
   const resetAll = () => {
     try { localStorage.removeItem('dvein_cms_content'); } catch {}
+    idbClear();
     setContent(defaultContent);
   };
 
@@ -431,4 +534,3 @@ export const useContent = () => {
   if (!ctx) throw new Error('useContent must be used within <ContentProvider>');
   return ctx;
 };
-            

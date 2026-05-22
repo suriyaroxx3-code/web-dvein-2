@@ -52,15 +52,36 @@ const Field = ({ label, value, onChange, type = 'text', rows, placeholder }) => 
   </div>
 );
 
+const compressImage = (file, maxPx = 700, quality = 0.78) => new Promise((resolve) => {
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    const img = new Image();
+    img.onload = () => {
+      let { width: w, height: h } = img;
+      if (w > maxPx || h > maxPx) {
+        if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
+        else       { w = Math.round(w * maxPx / h); h = maxPx; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
 const ImageField = ({ label, value, onChange, placeholder = 'https://...' }) => {
   const fileRef = useRef(null);
   const [tab, setTab] = useState('url');
-  const handleFile = (e) => {
+  const handleFile = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => { onChange(reader.result); setTab('url'); };
-    reader.readAsDataURL(file);
+    const compressed = await compressImage(file);
+    onChange(compressed);
+    setTab('url');
+    e.target.value = '';
   };
   return (
     <div className="mb-4">
